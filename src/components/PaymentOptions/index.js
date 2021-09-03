@@ -16,12 +16,11 @@ export default function PaymentOptions() {
   const { payment } = useApi();
 
   useEffect(() => {
-    payment.getPaymentInformations().then(response => {
-
+    payment.getPaymentInformativos().then(response => {
 	  setSubscriptionDone(true);
 	   });
     
-    payment.getPaymentInformations().catch(err => {
+    payment.getPaymentInformativos().catch(err => {
       setSubscriptionDone(true);
     });
   }, []);
