@@ -17,11 +17,13 @@ export default function PaymentOptions() {
 
   useEffect(() => {
     payment.getPaymentInformations().then(response => {
-      //console.log(response);
+      // eslint-disable-next-line no-console
+      console.log(response);
 	  setSubscriptionDone(true);
 	   });
     payment.getPaymentInformations().catch(err => {
-      //console.log(err.response.data);
+      // eslint-disable-next-line no-console
+      console.log(err.response.data);
       setSubscriptionDone(true);
 		 });
   }, []);
