@@ -1,3 +1,5 @@
+import CreditCard from "../../../components/PaymentPage/CreditCard";
+
 export default function Payment() {
-  return "Pagamento: Em breve!";
+  return <CreditCard />;
 }
