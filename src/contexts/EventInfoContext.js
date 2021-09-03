@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext } from "react";
+import { toast } from "react-toastify";
 
 import Splash from "../components/Splash";
 
@@ -19,8 +20,7 @@ export function EventInfoProvider({ children }) {
         setEventInfo(response.data);
       })
       .catch(error => {
-        /* eslint-disable-next-line no-console */
-        console.error(error);
+        toast(error);
         setError(error);
       });
   }, []);
