@@ -3,7 +3,7 @@ import styled from "styled-components";
 export default function Card({ hotelId, setHotelId, data }) {
   const { id, image, name, size, vacancies } = data;
 
-  function getText() {
+  function getHotelRoomsTypeText() {
     let text;
     switch(size) {
     case 1:
@@ -28,7 +28,7 @@ export default function Card({ hotelId, setHotelId, data }) {
       <h3>{name}</h3>
       <div>
         <strong>Tipos de acomodação:</strong>
-        <p>{getText()}</p>
+        <p>{getHotelRoomsTypeText()}</p>
       </div>
       <div>
         <strong>Vagas disponíveis:</strong>

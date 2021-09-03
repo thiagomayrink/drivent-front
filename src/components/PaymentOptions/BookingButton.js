@@ -12,9 +12,6 @@ export default function BookingButton(props) {
     };
     payment.save(newData).then(() => {
       toast("Ingresso reservado com sucesso!");
-    }).catch((err) => {
-      // eslint-disable-next-line no-console
-      console.log(err.response);
     });
   }
 

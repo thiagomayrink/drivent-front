@@ -17,13 +17,9 @@ export default function PaymentOptions() {
 
   useEffect(() => {
     payment.getPaymentInformations().then(response => {
-      // eslint-disable-next-line no-console
-      console.log(response);
 	  setSubscriptionDone(true);
 	   });
     payment.getPaymentInformations().catch(err => {
-      // eslint-disable-next-line no-console
-      console.log(err.response.data);
       setSubscriptionDone(true);
 		 });
   }, []);

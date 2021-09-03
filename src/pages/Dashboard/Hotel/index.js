@@ -24,11 +24,11 @@ export default function Hotel() {
   }, [hotelId]);
 
   function updateRooms() {
-    api.hotel.getHotelRooms(hotelId).then( r => setRooms(r));
+    api.hotel.getHotelRooms(hotelId).then( rooms => setRooms(rooms));
   }
 
   function updateHotels() {
-    api.hotel.getHotels().then( r => setHotels(r));
+    api.hotel.getHotels().then( hotels => setHotels(hotels));
   }
 
   function reserveRoom() {
