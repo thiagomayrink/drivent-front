@@ -12,6 +12,6 @@ export default function useApi() {
     auth: new AuthApi(),
     cep: new CepApi(),
     enrollment: new EnrollmentApi(),
-    payment: new PaymentApi()
+    payment: new PaymentApi(),
   };
 }

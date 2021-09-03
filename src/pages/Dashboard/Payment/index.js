@@ -1,6 +1,4 @@
-import PaymentOptions from "../../../components/PaymentOptions"; 
+import PaymentOptions from "../../../components/PaymentOptions";
 export default function Payment() {
-  return (
-    <PaymentOptions />
-  );
+  return <PaymentOptions />;
 }

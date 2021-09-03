@@ -19,95 +19,109 @@ export default function PaymentOptions() {
     payment.getPaymentInformations().then(response => {
       // eslint-disable-next-line no-console
       console.log(response);
-	  setSubscriptionDone(true);
-	   });
+      setSubscriptionDone(true);
+    });
     payment.getPaymentInformations().catch(err => {
       // eslint-disable-next-line no-console
       console.log(err.response.data);
       setSubscriptionDone(true);
-		 });
+    });
   }, []);
 
   return (
     <>
       <StyledHeader variant="h4">Ingresso e pagamento</StyledHeader>
-	  <StyledSubtitle 
-	  	variant="h6"
-        show={subscriptionDone}
-		  >Primeiro, escolha sua modalidade de ingresso</StyledSubtitle>
-      	<MuiPickersUtilsProvider utils={DateFnsUtils}>
-	  	<NoSubscriptionContainer show={subscriptionDone}>
+      <StyledSubtitle variant="h6" show={subscriptionDone}>
+        Primeiro, escolha sua modalidade de ingresso
+      </StyledSubtitle>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <NoSubscriptionContainer show={subscriptionDone}>
           <StyledSubtitle
             variant="h6"
-		   show={!subscriptionDone} 
-		   className="center"
-		  >Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso
+            show={!subscriptionDone}
+            className="center"
+          >
+            Você precisa completar sua inscrição antes de prosseguir pra escolha
+            de ingresso
           </StyledSubtitle>
         </NoSubscriptionContainer>
-    	<ModalityContainer show={subscriptionDone}>
+        <ModalityContainer show={subscriptionDone}>
           <ModalityButton
-		  id={"presential"}
-		  modality={modality}
-		  setModality={setModality}
-		  setAccommodation={setAccommodation}
-		  ><span>Presencial</span><span>R$ 250</span></ModalityButton>
+            id={"presential"}
+            modality={modality}
+            setModality={setModality}
+            setAccommodation={setAccommodation}
+          >
+            <span>Presencial</span>
+            <span>R$ 250</span>
+          </ModalityButton>
           <ModalityButton
-		  id={"online"}
-		  modality={modality}
-		  setModality={setModality}
-		  setAccommodation={setAccommodation}
-		  ><span>Online</span><span>R$ 100</span></ModalityButton>
+            id={"online"}
+            modality={modality}
+            setModality={setModality}
+            setAccommodation={setAccommodation}
+          >
+            <span>Online</span>
+            <span>R$ 100</span>
+          </ModalityButton>
         </ModalityContainer>
         <AccommodationContainer show={!!modality}>
           <WithAccommodation>
-            <StyledSubtitle
-              variant="h6" 
-              show={modality==="presential"}>
-					Ótimo! Agora escolha sua modalidade de hospedagem
+            <StyledSubtitle variant="h6" show={modality === "presential"}>
+              Ótimo! Agora escolha sua modalidade de hospedagem
             </StyledSubtitle>
             <HotelOption>
               <AccommodationButton
                 id={"withoutHotel"}
-                show={modality==="presential"}
+                show={modality === "presential"}
                 accommodation={accommodation}
                 setAccommodation={setAccommodation}
-              ><span>Sem Hotel</span><span>+ R$ 0</span></AccommodationButton>
+              >
+                <span>Sem Hotel</span>
+                <span>+ R$ 0</span>
+              </AccommodationButton>
               <AccommodationButton
                 id={"withHotel"}
-                show={modality==="presential"}
+                show={modality === "presential"}
                 accommodation={accommodation}
                 setAccommodation={setAccommodation}
-              ><span>Com Hotel</span><span>+ R$ 350</span></AccommodationButton>
+              >
+                <span>Com Hotel</span>
+                <span>+ R$ 350</span>
+              </AccommodationButton>
             </HotelOption>
             <SubmitContainer show={!!accommodation}>
-              <StyledSubtitle
-			  	show={!!accommodation}
-                variant="h6" 
-              >
-                <p>Fechado! O total ficou em 
-                  <span>{accommodation==="withHotel"? " R$ 600" : " R$ 250"}
-                  </span>. Agora é só confirmar:
+              <StyledSubtitle show={!!accommodation} variant="h6">
+                <p>
+                  Fechado! O total ficou em
+                  <span>
+                    {accommodation === "withHotel" ? " R$ 600" : " R$ 250"}
+                  </span>
+                  . Agora é só confirmar:
                 </p>
               </StyledSubtitle>
-			  <BookingButton
-			  id={"presential"}
-			  modality={modality}
-                accommodation={accommodation}>
-				  RESERVAR INGRESSO
-			  </BookingButton>
+              <BookingButton
+                id={"presential"}
+                modality={modality}
+                accommodation={accommodation}
+              >
+                RESERVAR INGRESSO
+              </BookingButton>
             </SubmitContainer>
           </WithAccommodation>
           <WithoutAccommodation>
-		  	<StyledSubtitle
-			  variant="h6" 
-			  show={modality === "online"}>
-				  <p>Fechado! O total ficou em<span> R$ 100</span>. Agora é só confirmar:</p>
+            <StyledSubtitle variant="h6" show={modality === "online"}>
+              <p>
+                Fechado! O total ficou em<span> R$ 100</span>. Agora é só
+                confirmar:
+              </p>
             </StyledSubtitle>
-            <BookingButton 
+            <BookingButton
               id={"online"}
               modality={modality}
-              accommodation={accommodation}>
-				RESERVAR INGRESSO
+              accommodation={accommodation}
+            >
+              RESERVAR INGRESSO
             </BookingButton>
           </WithoutAccommodation>
         </AccommodationContainer>
@@ -117,61 +131,61 @@ export default function PaymentOptions() {
 }
 
 const StyledHeader = styled(Typography)`
-  margin-bottom: 36px!important;
+  margin-bottom: 36px !important;
 `;
 const StyledSubtitle = styled(Typography)`
-  color: #8E8E8E;
+  color: #8e8e8e;
   width: 100%;
-  display: ${props => props.show ? "flex" : "none"};
+  display: ${props => (props.show ? "flex" : "none")};
   text-align: left;
 
   span {
-	  font-weight: bold;
+    font-weight: bold;
   }
-  
+
   @media (max-width: 600px) {
     width: 300px;
   }
-`;	
+`;
 const ModalityContainer = styled.div`
-	margin-top: 18px;
-	display: ${props => props.show ? "flex" : "none"};
+  margin-top: 18px;
+  display: ${props => (props.show ? "flex" : "none")};
 `;
 const NoSubscriptionContainer = styled.div`
-	display: ${props => props.show ? "none" : "flex"};
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 500px;
+  display: ${props => (props.show ? "none" : "flex")};
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 500px;
 
-	.center {
-		text-align: center;
-	}
+  .center {
+    text-align: center;
+  }
 
-	@media (max-width: 600px) {
-		height: 280px;
-	}
+  @media (max-width: 600px) {
+    height: 280px;
+  }
 `;
 
 const AccommodationContainer = styled.div`
-	display: ${props => props.show ? "flex" : "none"};
-	height: 100px;
-	width: 100%;
+  display: ${props => (props.show ? "flex" : "none")};
+  height: 100px;
+  width: 100%;
 `;
 
 const WithAccommodation = styled.div`
-	margin-top: 44px;
+  margin-top: 44px;
 `;
 
 const WithoutAccommodation = styled.div`
-	margin-top: 44px;
+  margin-top: 44px;
 `;
 
 const HotelOption = styled.div`
-	display: flex;
-	margin-top: 18px;
+  display: flex;
+  margin-top: 18px;
 `;
 const SubmitContainer = styled.div`
-	margin-top: 44px;
-	padding-bottom: 50px;
+  margin-top: 44px;
+  padding-bottom: 50px;
 `;
