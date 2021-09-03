@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext } from "react";
+import { toast } from "react-toastify";
 
 import Splash from "../components/Splash";
 
@@ -13,31 +14,31 @@ export function EventInfoProvider({ children }) {
   const api = useApi();
 
   useEffect(() => {
-    api.event.getEventInfo().then(response => {
-      setEventInfo(response.data);
-    }).catch(error => {
-      /* eslint-disable-next-line no-console */
-      console.error(error);
-      setError(error);
-    });
+    api.event
+      .getEventInfo()
+      .then(response => {
+        setEventInfo(response.data);
+      })
+      .catch(error => {
+        toast(error);
+        setError(error);
+      });
   }, []);
 
   if (!eventInfo && !error) {
-    return (
-      <Splash loading />
-    );
+    return <Splash loading />;
   }
 
   if (error) {
-    let message = error.response ? error.response.data.message : "Could not connect to server. Please try again later.";
-    return (
-      <Splash message={message} />
-    );
+    let message = error.response
+      ? error.response.data.message
+      : "Could not connect to server. Please try again later.";
+    return <Splash message={message} />;
   }
 
   return (
     <EventInfoContext.Provider value={{ eventInfo, eventInfoError: error }}>
-      { children }
+      {children}
     </EventInfoContext.Provider>
   );
 }
