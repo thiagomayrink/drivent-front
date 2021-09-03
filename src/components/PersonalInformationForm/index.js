@@ -69,8 +69,6 @@ export default function PersonalInformationForm() {
           } else {
             toast("Não foi possível");
           }
-          /* eslint-disable-next-line no-console */
-          console.log(error);
         });
     },
 
