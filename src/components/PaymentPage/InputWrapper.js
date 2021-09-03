@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const InputWrapper = styled.div`
   margin-left: 30px;
   > div {
-    width: 350px;
+    width: 100%;
   }
   input {
     padding: 4px;
