@@ -17,8 +17,10 @@ export default function PaymentOptions() {
 
   useEffect(() => {
     payment.getPaymentInformations().then(response => {
-      setSubscriptionDone(true);
-    });
+
+	  setSubscriptionDone(true);
+	   });
+    
     payment.getPaymentInformations().catch(err => {
       setSubscriptionDone(true);
     });
