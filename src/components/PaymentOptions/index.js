@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import DateFnsUtils from "@date-io/date-fns";
 import Typography from "@material-ui/core/Typography";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+
+import PaymentLayout from "../../layouts/PaymentOptions";
+import OptionsButton from "./OptionsButton";
+import BookingButton from "./BookingButton";
 
 import useApi from "../../hooks/useApi";
-import ModalityButton from "./ModalityButton";
-import AccommodationButton from "./AccommodationButton";
-import BookingButton from "./BookingButton";
+import { toast } from "react-toastify";
 
 export default function PaymentOptions() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);
@@ -16,79 +16,80 @@ export default function PaymentOptions() {
   const { payment } = useApi();
 
   useEffect(() => {
-    payment.getPaymentInformativos().then(response => {
-	  setSubscriptionDone(true);
-	   });
-    
-    payment.getPaymentInformativos().catch(err => {
+    payment.getPaymentInformations().then(response => {
+      toast(response.data.status);
+      setSubscriptionDone(true);
+    });
+    payment.getPaymentInformations().catch(err => {
+      toast(err.response.status);
       setSubscriptionDone(true);
     });
   }, []);
 
   return (
-    <>
+    <PaymentLayout>
       <StyledHeader variant="h4">Ingresso e pagamento</StyledHeader>
-      <StyledSubtitle variant="h6" show={subscriptionDone}>
-        Primeiro, escolha sua modalidade de ingresso
-      </StyledSubtitle>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <NoSubscriptionContainer show={subscriptionDone}>
-          <StyledSubtitle
-            variant="h6"
-            show={!subscriptionDone}
-            className="center"
-          >
-            Você precisa completar sua inscrição antes de prosseguir pra escolha
-            de ingresso
-          </StyledSubtitle>
-        </NoSubscriptionContainer>
-        <ModalityContainer show={subscriptionDone}>
-          <ModalityButton
+      <WithoutSubscriptionContainer show={subscriptionDone.toString()}>
+        <StyledSubtitle variant="h6" className="center">
+          Você precisa completar sua inscrição antes de prosseguir pra escolha
+          de ingresso
+        </StyledSubtitle>
+      </WithoutSubscriptionContainer>
+      <WithSubscriptionContainer show={subscriptionDone.toString()}>
+        <StyledSubtitle variant="h6">
+          Primeiro, escolha sua modalidade de ingresso
+        </StyledSubtitle>
+        <div>
+          <OptionsButton
             id={"presential"}
             modality={modality}
             setModality={setModality}
+            accommodation={accommodation}
             setAccommodation={setAccommodation}
           >
             <span>Presencial</span>
             <span>R$ 250</span>
-          </ModalityButton>
-          <ModalityButton
+          </OptionsButton>
+          <OptionsButton
             id={"online"}
             modality={modality}
             setModality={setModality}
+            accommodation={accommodation}
             setAccommodation={setAccommodation}
           >
             <span>Online</span>
             <span>R$ 100</span>
-          </ModalityButton>
-        </ModalityContainer>
-        <AccommodationContainer show={!!modality}>
-          <WithAccommodation>
-            <StyledSubtitle variant="h6" show={modality === "presential"}>
+          </OptionsButton>
+        </div>
+        <AccommodationContainer show={(!!modality).toString()}>
+          <WithAccommodation show={(modality === "presential").toString()}>
+            <StyledSubtitle variant="h6">
               Ótimo! Agora escolha sua modalidade de hospedagem
             </StyledSubtitle>
             <HotelOption>
-              <AccommodationButton
+              <OptionsButton
                 id={"withoutHotel"}
-                show={modality === "presential"}
+                modality={modality}
+                setModality={setModality}
                 accommodation={accommodation}
                 setAccommodation={setAccommodation}
               >
                 <span>Sem Hotel</span>
                 <span>+ R$ 0</span>
-              </AccommodationButton>
-              <AccommodationButton
+              </OptionsButton>
+              <OptionsButton
                 id={"withHotel"}
-                show={modality === "presential"}
+                modality={modality}
+                setModality={setModality}
                 accommodation={accommodation}
                 setAccommodation={setAccommodation}
               >
                 <span>Com Hotel</span>
                 <span>+ R$ 350</span>
-              </AccommodationButton>
+              </OptionsButton>
             </HotelOption>
-            <SubmitContainer show={!!accommodation}>
-              <StyledSubtitle show={!!accommodation} variant="h6">
+            <SubmitContainer show={(!!accommodation).toString()}>
+              <StyledSubtitle variant="h6">
                 <p>
                   Fechado! O total ficou em
                   <span>
@@ -106,8 +107,8 @@ export default function PaymentOptions() {
               </BookingButton>
             </SubmitContainer>
           </WithAccommodation>
-          <WithoutAccommodation>
-            <StyledSubtitle variant="h6" show={modality === "online"}>
+          <WithoutAccommodation show={(modality === "online").toString()}>
+            <StyledSubtitle variant="h6">
               <p>
                 Fechado! O total ficou em<span> R$ 100</span>. Agora é só
                 confirmar:
@@ -122,8 +123,8 @@ export default function PaymentOptions() {
             </BookingButton>
           </WithoutAccommodation>
         </AccommodationContainer>
-      </MuiPickersUtilsProvider>
-    </>
+      </WithSubscriptionContainer>
+    </PaymentLayout>
   );
 }
 
@@ -133,7 +134,6 @@ const StyledHeader = styled(Typography)`
 const StyledSubtitle = styled(Typography)`
   color: #8e8e8e;
   width: 100%;
-  display: ${props => (props.show ? "flex" : "none")};
   text-align: left;
 
   span {
@@ -144,12 +144,8 @@ const StyledSubtitle = styled(Typography)`
     width: 300px;
   }
 `;
-const ModalityContainer = styled.div`
-  margin-top: 18px;
-  display: ${props => (props.show ? "flex" : "none")};
-`;
-const NoSubscriptionContainer = styled.div`
-  display: ${props => (props.show ? "none" : "flex")};
+const WithoutSubscriptionContainer = styled.div`
+  display: ${props => (props.show === "true" ? "none" : "flex")};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -163,26 +159,38 @@ const NoSubscriptionContainer = styled.div`
     height: 280px;
   }
 `;
+const WithSubscriptionContainer = styled.div`
+  display: ${props => (props.show === "true" ? "flex" : "none")};
+  flex-direction: column;
 
+  > div:first-of-type {
+    display: flex;
+    margin-top: 18px;
+  }
+`;
 const AccommodationContainer = styled.div`
-  display: ${props => (props.show ? "flex" : "none")};
+  display: ${props => (props.show === "true" ? "flex" : "none")};
+  flex-direction: column;
   height: 100px;
   width: 100%;
 `;
-
 const WithAccommodation = styled.div`
+  display: ${props => (props.show === "true" ? "flex" : "none")};
+  flex-direction: column;
   margin-top: 44px;
 `;
-
 const WithoutAccommodation = styled.div`
+  display: ${props => (props.show === "true" ? "flex" : "none")};
+  flex-direction: column;
   margin-top: 44px;
 `;
-
 const HotelOption = styled.div`
   display: flex;
   margin-top: 18px;
 `;
 const SubmitContainer = styled.div`
+  display: ${props => (props.show === "true" ? "flex" : "none")};
+  flex-direction: column;
   margin-top: 44px;
   padding-bottom: 50px;
 `;
