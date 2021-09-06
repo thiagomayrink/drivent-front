@@ -16,14 +16,11 @@ export default function PaymentOptions() {
   const { payment } = useApi();
 
   useEffect(() => {
-    payment.getPaymentInformations().then((response) => {
-      // eslint-disable-next-line no-console
-      console.log(response);
-      setSubscriptionDone(true);
-    });
-    payment.getPaymentInformations().catch((err) => {
-      // eslint-disable-next-line no-console
-      console.log(err.response.data);
+    payment.getPaymentInformativos().then(response => {
+	  setSubscriptionDone(true);
+	   });
+    
+    payment.getPaymentInformativos().catch(err => {
       setSubscriptionDone(true);
     });
   }, []);
@@ -136,7 +133,7 @@ const StyledHeader = styled(Typography)`
 const StyledSubtitle = styled(Typography)`
   color: #8e8e8e;
   width: 100%;
-  display: ${(props) => (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? "flex" : "none")};
   text-align: left;
 
   span {
@@ -149,10 +146,10 @@ const StyledSubtitle = styled(Typography)`
 `;
 const ModalityContainer = styled.div`
   margin-top: 18px;
-  display: ${(props) => (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? "flex" : "none")};
 `;
 const NoSubscriptionContainer = styled.div`
-  display: ${(props) => (props.show ? "none" : "flex")};
+  display: ${props => (props.show ? "none" : "flex")};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -168,7 +165,7 @@ const NoSubscriptionContainer = styled.div`
 `;
 
 const AccommodationContainer = styled.div`
-  display: ${(props) => (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? "flex" : "none")};
   height: 100px;
   width: 100%;
 `;

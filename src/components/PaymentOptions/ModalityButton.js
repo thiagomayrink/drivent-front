@@ -30,9 +30,9 @@ export default function ModalityButton(props) {
 const Button = styled.button`
   width: 145px;
   height: 145px;
-  border: 1px solid ${(props) => (props.selected ? "#FFEED2" : "#cecece")};
+  border: 1px solid ${props => (props.selected ? "#FFEED2" : "#cecece")};
   cursor: pointer;
-  background-color: ${(props) => (props.selected ? "#FFEED2" : "#fff")};
+  background-color: ${props => (props.selected ? "#FFEED2" : "#fff")};
   border-radius: 20px;
   margin-right: 24px;
 

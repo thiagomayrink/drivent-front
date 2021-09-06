@@ -28,7 +28,7 @@ import { validations as FormValidations } from "./FormValidations";
 
 export default function CreditCard() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
-  const [hasTicket, setHasTicket] = useState("false"); //rollback to false before commit;
+  const [hasTicket, setHasTicket] = useState("true"); //rollback to false before commit;
   const { payment } = useApi();
 
   const {
@@ -80,50 +80,14 @@ export default function CreditCard() {
     },
   });
 
-  useEffect(() => {
-    payment.getPaymentInformations().then((response) => {
-      if (response.status !== 200) {
-        return setHasTicket("true");
-      }
-      setData({
-        number: "",
-        name: "",
-        expiry: "",
-        cvc: "",
-        issuer: "",
-        focused: "",
-        formData: null,
-      });
-    });
-  }, []);
-
-  const [cardData, setCardData] = useState({
-    number: "",
-    name: "",
-    expiry: "",
-    cvc: "",
-    issuer: "",
-    focused: "",
-    formData: null,
-  });
-
-  function handleInputFocus(e) {
-    setCardData({ ...cardData, focus: e.target.name });
+  function handleCallback({ issuer }, _isValid) {
+    if (issuer !== "unknown") {
+      setData({ ...data, issuer: issuer });
+    }
   }
 
-  function handleInputChange(e) {
-    let { name, value } = e.target;
-    if (name === "number") {
-      value = formatCreditCardNumber(value);
-    }
-    if (name === "expiry") {
-      value = formatExpirationDate(value);
-    }
-    if (name === "cvv") {
-      value = formatCVC(value);
-    }
-    console.log(cardData);
-    setCardData({ ...cardData, [name]: value });
+  function handleInputFocus(e) {
+    setData({ ...data, focused: e.target.name });
   }
 
   return (
@@ -133,11 +97,12 @@ export default function CreditCard() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <CardContainer>
             <Card
-              cvc={cardData.cvc}
-              expiry={cardData.expiry}
-              focused={cardData.focused}
-              name={cardData.name}
-              number={cardData.number}
+              cvc={data.cvc}
+              expiry={data.expiry}
+              focused={data.focused}
+              name={data.name}
+              number={data.number}
+              callback={handleCallback}
             />
             <FormWrapper onSubmit={handleSubmit}>
               <StyledInputWraper>
@@ -146,9 +111,14 @@ export default function CreditCard() {
                   name="number"
                   placeholder="Número do Cartão"
                   pattern="[\d| ]{16,22}"
-                  value={cardData.number}
+                  value={data.number}
                   required
-                  onChange={handleInputChange}
+                  onChange={(e) =>
+                    customHandleChange(
+                      "number",
+                      formatCreditCardNumber
+                    )(e.target.value)
+                  }
                 />
                 <p>E.g.: 49..., 51..., 36..., 37...</p>
               </StyledInputWraper>
@@ -157,9 +127,9 @@ export default function CreditCard() {
                   type="text"
                   name="name"
                   placeholder="Nome"
-                  value={cardData.name}
+                  value={data.name}
                   required
-                  onChange={handleInputChange}
+                  onChange={handleChange("name")}
                   onFocus={handleInputFocus}
                 />
               </InputWrapper>
@@ -170,9 +140,14 @@ export default function CreditCard() {
                     name="expiry"
                     placeholder="Válido até"
                     pattern="\d\d/\d\d"
-                    value={cardData.expiry}
+                    value={data.expiry}
                     required
-                    onChange={handleInputChange}
+                    onChange={(e) =>
+                      customHandleChange(
+                        "expiry",
+                        formatExpirationDate
+                      )(e.target.value)
+                    }
                     onFocus={handleInputFocus}
                   />
                 </InputWrapper>
@@ -182,14 +157,16 @@ export default function CreditCard() {
                     name="cvc"
                     placeholder="CVC"
                     pattern="\d{3,4}"
-                    value={cardData.cvc}
+                    value={data.cvc}
                     required
-                    onChange={handleInputChange}
+                    onChange={(e) =>
+                      customHandleChange("cvc", formatCVC)(e.target.value)
+                    }
                     onFocus={handleInputFocus}
                   />
                 </InputWrapper>
               </InputContainer>
-              <input type="hidden" name="issuer" value={cardData.issuer} />
+              <input type="hidden" name="issuer" value={data.issuer} />
             </FormWrapper>
           </CardContainer>
           <SubmitContainer>

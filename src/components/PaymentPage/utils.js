@@ -5,7 +5,6 @@ function clearNumber(value = "") {
 }
 
 export function formatCreditCardNumber(value) {
-  console.log(value);
   if (!value) {
     return value;
   }

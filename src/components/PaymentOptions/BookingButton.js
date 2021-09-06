@@ -15,9 +15,8 @@ export default function BookingButton(props) {
       .then(() => {
         toast("Ingresso reservado com sucesso!");
       })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.log(err.response);
+      .catch(err => {
+        toast(err.response.status);
       });
   }
 
@@ -47,7 +46,7 @@ const Button = styled.button`
   margin-right: 24px;
   margin-top: 20px;
 
-  display: ${(props) => (props.show ? "flex" : "none")};
+  display: ${props => (props.show ? "flex" : "none")};
   justify-content: center;
   align-items: center;
   flex-direction: column;
