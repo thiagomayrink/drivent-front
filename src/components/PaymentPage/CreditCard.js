@@ -1,20 +1,18 @@
 import React from "react";
 import Card from "react-credit-cards";
+import "react-credit-cards/es/styles-compiled.css";
 
 import {
   formatCreditCardNumber,
   formatCVC,
   formatExpirationDate,
-  formatFormData,
 } from "./utils";
-
-import "react-credit-cards/es/styles-compiled.css";
+import { FaCheckCircle } from "react-icons/fa";
 
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import DateFnsUtils from "@date-io/date-fns";
-import Typography from "@material-ui/core/Typography";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useApi";
 
@@ -64,8 +62,6 @@ export default function CreditCard() {
           } else {
             toast("Não foi possível realizar o pagamento");
           }
-          /* eslint-disable-next-line no-console */
-          console.log(error);
         });
     },
 
@@ -80,6 +76,19 @@ export default function CreditCard() {
     },
   });
 
+  // useEffect(() => {
+  //   payment.getPaymentInformations().then(response => {
+  //     if (response.status !== 200) {
+  //       setHasTicket(false);
+  //       return;
+  //     }
+
+  //     const { purchaseId } = response.data;
+
+  //     setHasTicket(true);
+  //   });
+  // }, []);
+
   function handleCallback({ issuer }, _isValid) {
     if (issuer !== "unknown") {
       setData({ ...data, issuer: issuer });
@@ -89,100 +98,173 @@ export default function CreditCard() {
   function handleInputFocus(e) {
     setData({ ...data, focused: e.target.name });
   }
-
-  return (
-    <>
-      <Container isVisible={hasTicket}>
+  if (hasTicket === "false") {
+    return (
+      <>
         <Subttitle>Pagamento</Subttitle>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <CardContainer>
-            <Card
-              cvc={data.cvc}
-              expiry={data.expiry}
-              focused={data.focused}
-              name={data.name}
-              number={data.number}
-              callback={handleCallback}
-            />
-            <FormWrapper onSubmit={handleSubmit}>
-              <StyledInputWraper>
-                <Input
-                  type="tel"
-                  name="number"
-                  placeholder="Número do Cartão"
-                  pattern="[\d| ]{16,22}"
-                  value={data.number}
-                  required
-                  onChange={(e) =>
-                    customHandleChange(
-                      "number",
-                      formatCreditCardNumber
-                    )(e.target.value)
-                  }
-                />
-                <p>E.g.: 49..., 51..., 36..., 37...</p>
-              </StyledInputWraper>
-              <InputWrapper>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Nome"
-                  value={data.name}
-                  required
-                  onChange={handleChange("name")}
-                  onFocus={handleInputFocus}
-                />
-              </InputWrapper>
-              <InputContainer>
-                <InputWrapper>
+        <Container>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <CardContainer>
+              <Card
+                cvc={data.cvc}
+                expiry={data.expiry}
+                focused={data.focused}
+                name={data.name}
+                number={data.number}
+                callback={handleCallback}
+              />
+              <FormWrapper onSubmit={handleSubmit}>
+                <StyledInputWraper>
                   <Input
                     type="tel"
-                    name="expiry"
-                    placeholder="Válido até"
-                    pattern="\d\d/\d\d"
-                    value={data.expiry}
+                    name="number"
+                    placeholder="Número do Cartão"
+                    pattern="[\d| ]{16,22}"
+                    value={data.number}
                     required
+                    onFocus={handleInputFocus}
                     onChange={(e) =>
                       customHandleChange(
-                        "expiry",
-                        formatExpirationDate
+                        "number",
+                        formatCreditCardNumber
                       )(e.target.value)
                     }
-                    onFocus={handleInputFocus}
                   />
-                </InputWrapper>
-                <InputWrapper>
+                  {errors.number && <ErrorMsg>{errors.number}</ErrorMsg>}
+                  <p>E.g.: 49..., 51..., 36..., 37...</p>
+                </StyledInputWraper>
+                <StyledInputWraper>
                   <Input
-                    type="tel"
-                    name="cvc"
-                    placeholder="CVC"
-                    pattern="\d{3,4}"
-                    value={data.cvc}
+                    type="text"
+                    name="name"
+                    placeholder="Nome"
+                    value={data.name}
                     required
-                    onChange={(e) =>
-                      customHandleChange("cvc", formatCVC)(e.target.value)
-                    }
                     onFocus={handleInputFocus}
+                    onChange={handleChange("name")}
                   />
-                </InputWrapper>
-              </InputContainer>
-              <input type="hidden" name="issuer" value={data.issuer} />
-            </FormWrapper>
-          </CardContainer>
-          <SubmitContainer>
-            <PaymentButton disabled={dynamicInputIsLoading} type="submit">
-              FINALIZAR PAGAMENTO
-            </PaymentButton>
-          </SubmitContainer>
-        </MuiPickersUtilsProvider>
-      </Container>
-    </>
-  );
+                  {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>}
+                </StyledInputWraper>
+                <InputContainer>
+                  <StyledInputWraper>
+                    <Input
+                      type="tel"
+                      name="expiry"
+                      placeholder="Válido até"
+                      pattern="\d\d/\d\d"
+                      value={data.expiry}
+                      required
+                      onFocus={handleInputFocus}
+                      onChange={(e) =>
+                        customHandleChange(
+                          "expiry",
+                          formatExpirationDate
+                        )(e.target.value)
+                      }
+                    />
+                    {errors.expiry && <ErrorMsg>{errors.expiry}</ErrorMsg>}
+                  </StyledInputWraper>
+                  <StyledInputWraper>
+                    <Input
+                      type="tel"
+                      name="cvc"
+                      placeholder="CVC"
+                      pattern="\d{3,4}"
+                      value={data.cvc}
+                      required
+                      onFocus={handleInputFocus}
+                      onChange={(e) =>
+                        customHandleChange("cvc", formatCVC)(e.target.value)
+                      }
+                    />
+                    {errors.cvc && <ErrorMsg>{errors.cvc}</ErrorMsg>}
+                  </StyledInputWraper>
+                </InputContainer>
+                <input type="hidden" name="issuer" value={data.issuer} />
+              </FormWrapper>
+            </CardContainer>
+            <SubmitContainer>
+              <PaymentButton disabled={dynamicInputIsLoading} type="submit">
+                FINALIZAR PAGAMENTO
+              </PaymentButton>
+            </SubmitContainer>
+          </MuiPickersUtilsProvider>
+        </Container>
+      </>
+    );
+  } else if (hasTicket === "true") {
+    return (
+      <>
+        <Subttitle>Pagamento</Subttitle>
+        <CheckoutContainer>
+          <CheckoutIcon />
+          <ConfirmationMessage>
+            <p>
+              <strong>Pagamento confirmado!</strong>
+            </p>
+            <p>Prossiga para escolha de hospedagem e atividades</p>
+          </ConfirmationMessage>
+        </CheckoutContainer>
+      </>
+    );
+  }
 }
+
+const Container = styled.div`
+  @media (max-width: 600px) {
+    form {
+      margin-top: 16px;
+    }
+  }
+`;
+
+const SubmitContainer = styled.div`
+  margin-top: 40px !important;
+  width: 100% !important;
+
+  > button {
+    margin-top: 0 !important;
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 24px !important;
+    text-align: center;
+  }
+`;
 
 const PaymentButton = styled(Button)`
   margin-top: 20px;
   height: 38px;
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    width: 300px;
+  }
+`;
+
+const StyledInputWraper = styled(InputWrapper)`
+  > p {
+    margin: 8px 0 4px 0;
+    font-weight: normal;
+    color: #8e8e8e;
+  }
+
+  @media (max-width: 600px) {
+    margin: 0;
+  }
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  > div {
+    width: calc(50% - 8px);
+  }
 `;
 
 const Subttitle = styled.div`
@@ -204,30 +286,21 @@ const Subttitle = styled.div`
   }
 `;
 
-const SubmitContainer = styled.div`
-  margin-top: 40px !important;
-  width: 100% !important;
-
-  > button {
-    margin-top: 0 !important;
-  }
-`;
-
-const Container = styled.div`
-  display: ${(props) => (props.isVisible === "true" ? "block" : "none")};
-`;
-const CardContainer = styled.div`
+const CheckoutContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-`;
-const StyledInputWraper = styled(InputWrapper)`
-  > p {
-    margin: 8px 0 4px 0;
-    font-weight: normal;
-    color: #8e8e8e;
-  }
+  align-items: center;
+  font-family: Roboto;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0em;
+  color: #454545;
 `;
 
-const InputContainer = styled.div`
-  display: flex;
+const ConfirmationMessage = styled.div`
+  margin-left: 12px;
+`;
+
+const CheckoutIcon = styled(FaCheckCircle)`
+  font-size: 44px;
+  color: #36b853;
 `;
