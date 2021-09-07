@@ -6,20 +6,19 @@ import PaymentLayout from "../../layouts/PaymentOptions";
 import OptionsButton from "./OptionsButton";
 import BookingButton from "./BookingButton";
 
-/* import useApi from "../../hooks/useApi";
-import { toast } from "react-toastify"; */
-
 import DashboardContext from "../../contexts/DashboardContext";
 
 export default function PaymentOptions() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);
   const [modality, setModality] = useState(false);
   const [accommodation, setAccommodation] = useState(false);
-  //const { payment } = useApi();
 
   const { dashboardData } = useContext(DashboardContext);
 
   useEffect(() => {
+    if (dashboardData.subscriptionDone === undefined) {
+      return;
+    }
     if (dashboardData.subscriptionDone) {
       setSubscriptionDone(true);
     }

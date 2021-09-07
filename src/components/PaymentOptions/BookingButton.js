@@ -1,23 +1,27 @@
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
+import { useHistory } from "react-router-dom";
 
 export default function BookingButton(props) {
   const { id, modality, accommodation, children } = props;
-  const { payment } = useApi();
+  const { ticket } = useApi();
+  let history = useHistory();
+
   function bookTicket() {
     const newData = {
       modality: modality,
       accommodation: accommodation,
     };
 
-    payment
+    ticket
       .save(newData)
       .then(() => {
         toast("Ingresso reservado com sucesso!");
+        history.push("/dashboard");
       })
       .catch(err => {
-        toast(err.response.status);
+        toast(err.response.data.message);
       });
   }
 
