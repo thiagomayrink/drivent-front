@@ -3,7 +3,7 @@ import styled from "styled-components";
 import useApi from "../../hooks/useApi";
 
 export default function BookingButton(props) {
-  const { id, modality, accommodation, active, children } = props;
+  const { id, modality, accommodation, children } = props;
   const { payment } = useApi();
   function bookTicket() {
     const newData = {
@@ -27,7 +27,6 @@ export default function BookingButton(props) {
         (id === modality && !!accommodation) ||
         (modality === "online" && id !== "presential")
       }
-      active={active}
       onClick={() => bookTicket()}
     >
       {children}

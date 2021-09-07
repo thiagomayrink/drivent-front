@@ -1,26 +1,55 @@
 import styled from "styled-components";
 
-export default function ModalityButton(props) {
-  const { id, modality, setModality, setAccommodation, active, children } =
-    props;
+export default function OptionsButton(props) {
+  const {
+    id,
+    modality,
+    setModality,
+    accommodation,
+    setAccommodation,
+    children,
+  } = props;
+
   function selectOption() {
     if (id === "online") {
+      if (modality !== "online") {
+        setModality("online");
+      } else {
+        setModality(false);
+      }
       setAccommodation(false);
     }
 
-    if (modality === id) {
-      setModality(false);
-      setAccommodation(false);
-    } else {
-      setModality(id);
+    if (id === "presential") {
+      if (modality !== "presential") {
+        setModality("presential");
+      } else {
+        setModality(false);
+        setAccommodation(false);
+      }
+    }
+
+    if (id === "withoutHotel") {
+      if (accommodation !== "withoutHotel") {
+        setAccommodation("withoutHotel");
+      } else {
+        setAccommodation(false);
+      }
+    }
+
+    if (id === "withHotel") {
+      if (accommodation !== "withHotel") {
+        setAccommodation("withHotel");
+      } else {
+        setAccommodation(false);
+      }
     }
   }
 
   return (
     <Button
-      active={active}
       onClick={() => selectOption()}
-      selected={modality === id}
+      selected={id === modality || id === accommodation}
     >
       {children}
     </Button>
@@ -35,7 +64,6 @@ const Button = styled.button`
   background-color: ${props => (props.selected ? "#FFEED2" : "#fff")};
   border-radius: 20px;
   margin-right: 24px;
-
   display: flex;
   justify-content: center;
   align-items: center;
