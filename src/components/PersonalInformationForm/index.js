@@ -22,6 +22,7 @@ import { ufList } from "./ufList";
 import FormValidations from "./FormValidations";
 
 import DashboardContext from "../../contexts/DashboardContext";
+import UserContext from "../../contexts/UserContext";
 
 dayjs.extend(CustomParseFormat);
 
@@ -30,6 +31,7 @@ export default function PersonalInformationForm() {
   const { enrollment, cep } = useApi();
 
   const { dashboardData, setDashboardData } = useContext(DashboardContext);
+  const { userData } = useContext(UserContext);
 
   const {
     handleSubmit,
@@ -64,6 +66,11 @@ export default function PersonalInformationForm() {
         .save(newData)
         .then(() => {
           toast("Salvo com sucesso!");
+          dashboardData["userId"] = userData.user.id;
+          dashboardData["userEmail"] = userData.user.email;
+          dashboardData["name"] = newData.name;
+          dashboardData["subscriptionDone"] = true;
+          setDashboardData({ ...dashboardData });
         })
         .catch(error => {
           if (error.response?.data?.details) {
@@ -98,6 +105,8 @@ export default function PersonalInformationForm() {
       }
       const { name, cpf, birthday, phone, address } = response.data;
 
+      dashboardData["userId"] = userData.user.id;
+      dashboardData["userEmail"] = userData.user.email;
       dashboardData["name"] = name;
       dashboardData["subscriptionDone"] = true;
       setDashboardData({ ...dashboardData });
