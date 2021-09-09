@@ -1,23 +1,45 @@
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
+import { useHistory } from "react-router-dom";
+import { useContext } from "react";
+import DashboardContext from "../../contexts/DashboardContext";
+import UserContext from "../../contexts/UserContext";
 
 export default function BookingButton(props) {
   const { id, modality, accommodation, children } = props;
+
+  const { dashboardData } = useContext(DashboardContext);
+  const { userData, setUserData } = useContext(UserContext);
+
   const { payment } = useApi();
-  
+  let history = useHistory();
+
   function bookTicket() {
+    const modalityId = modality === "presential" ? 1 : 2;
+    const accommodationId = accommodation === "withHotel" ? 2 : 1;
+
+    setUserData({
+      ...userData,
+      ticket: {
+        modality: { id: modalityId, name: modality },
+        accomodation: { id: accommodationId, name: accommodation },
+      },
+    });
+
     const newData = {
-      modality: modality,
-      accommodation: accommodation,
+      enrollmentId: userData.enrollmentId,
+      modalityId: modalityId,
+      accommodationId: accommodationId,
     };
     payment
       .save(newData)
       .then(() => {
         toast("Ingresso reservado com sucesso!");
+        setTimeout(() => history.go(0), 1000);
       })
-      .catch(err => {
-        toast(err.response.status);
+      .catch((err) => {
+        toast(err.response.data.message);
       });
   }
 
@@ -46,7 +68,7 @@ const Button = styled.button`
   margin-right: 24px;
   margin-top: 20px;
 
-  display: ${props => (props.show ? "flex" : "none")};
+  display: ${(props) => (props.show ? "flex" : "none")};
   justify-content: center;
   align-items: center;
   flex-direction: column;
