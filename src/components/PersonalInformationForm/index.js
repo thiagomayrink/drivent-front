@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import DateFnsUtils from "@date-io/date-fns";
 import Typography from "@material-ui/core/Typography";
@@ -21,11 +21,17 @@ import { ErrorMsg } from "./ErrorMsg";
 import { ufList } from "./ufList";
 import FormValidations from "./FormValidations";
 
+import DashboardContext from "../../contexts/DashboardContext";
+import UserContext from "../../contexts/UserContext";
+
 dayjs.extend(CustomParseFormat);
 
 export default function PersonalInformationForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const { enrollment, cep } = useApi();
+
+  const { dashboardData, setDashboardData } = useContext(DashboardContext);
+  const { userData } = useContext(UserContext);
 
   const {
     handleSubmit,
@@ -60,6 +66,11 @@ export default function PersonalInformationForm() {
         .save(newData)
         .then(() => {
           toast("Salvo com sucesso!");
+          dashboardData["userId"] = userData.user.id;
+          dashboardData["userEmail"] = userData.user.email;
+          dashboardData["name"] = newData.name;
+          dashboardData["subscriptionDone"] = true;
+          setDashboardData({ ...dashboardData });
         })
         .catch(error => {
           if (error.response?.data?.details) {
@@ -92,8 +103,13 @@ export default function PersonalInformationForm() {
       if (response.status !== 200) {
         return;
       }
-
       const { name, cpf, birthday, phone, address } = response.data;
+
+      dashboardData["userId"] = userData.user.id;
+      dashboardData["userEmail"] = userData.user.email;
+      dashboardData["name"] = name;
+      dashboardData["subscriptionDone"] = true;
+      setDashboardData({ ...dashboardData });
 
       setData({
         name,

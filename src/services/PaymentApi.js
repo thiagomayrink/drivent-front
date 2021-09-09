@@ -10,8 +10,8 @@ export default class PaymentApi extends AuthenticatedApi {
     });
   }
 
-  getPaymentInformations() {
-    return api.get("/payment", {
+  getPaymentInformations(id) {
+    return api.get(`/payment/${id}`, {
       headers: {
         ...this.getAuthorizationHeader(),
       },

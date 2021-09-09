@@ -1,23 +1,36 @@
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
+import { useHistory } from "react-router-dom";
+import { useContext } from "react";
+import DashboardContext from "../../contexts/DashboardContext";
 
 export default function BookingButton(props) {
   const { id, modality, accommodation, children } = props;
+
+  const { dashboardData } = useContext(DashboardContext);
+
   const { payment } = useApi();
+  let history = useHistory();
+
   function bookTicket() {
+    const modalityId = modality === "presential" ? 1 : 2;
+    const accommodationId = accommodation === "withHotel" ? 2 : 1;
+
     const newData = {
-      modality: modality,
-      accommodation: accommodation,
+      userId: dashboardData.userId,
+      modalityId: modalityId,
+      accommodationId: accommodationId,
     };
 
     payment
       .save(newData)
       .then(() => {
         toast("Ingresso reservado com sucesso!");
+        setTimeout(() => history.go(0), 1000);
       })
       .catch(err => {
-        toast(err.response.status);
+        toast(err.response.data.message);
       });
   }
 
