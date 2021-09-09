@@ -6,7 +6,7 @@ const validations = {
     },
   },
 
-  validThru: {
+  expiry: {
     custom: {
       isValid: (value) => parseInt(value?.length, 10) === 4,
       message: "Digite a validade do cartão",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Card from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 
@@ -23,10 +23,13 @@ import { InputWrapper } from "./InputWrapper";
 import { useForm } from "../../hooks/useForm";
 import { ErrorMsg } from "./ErrorMsg";
 import { validations as FormValidations } from "./FormValidations";
+import UserContext from "../../contexts/UserContext";
+import { Typography } from "@material-ui/core";
 
-export default function CreditCard() {
+export default function PaymentPage() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
-  const [hasTicket, setHasTicket] = useState("true"); //rollback to false before commit;
+  const { userData, setUserData } = useContext(UserContext);
+  const [hasPaid, setHasPaid] = useState("false"); //rollback to false before commit;
   const { payment } = useApi();
 
   const {
@@ -50,8 +53,12 @@ export default function CreditCard() {
 
       payment
         .save(newData)
-        .then(() => {
+        .then((response) => {
           toast("Pagamento realizado com sucesso!");
+          const purchaseId = response?.data?.purchaseId;
+          //prettier-ignore
+          if (!!purchaseId) setUserData({ ...userData, purchaseId: purchaseId });
+          if (!purchaseId) toast("Não foi possível realizar o pagamento");
           setDynamicInputIsLoading(false);
         })
         .catch((error) => {
@@ -79,13 +86,17 @@ export default function CreditCard() {
   // useEffect(() => {
   //   payment.getPaymentInformations().then(response => {
   //     if (response.status !== 200) {
-  //       setHasTicket(false);
   //       return;
   //     }
-
-  //     const { purchaseId } = response.data;
-
-  //     setHasTicket(true);
+  //     const ticketId = response?.data?.ticketId;
+  //
+  //     if(!!ticketId){
+  //       setUserData({ ...userData, ticketId: ticketId })
+  //       setHasPaid(true)
+  //     };
+  //     if (!ticketId) {
+  //       setHasPaid(false);
+  //     }
   //   });
   // }, []);
 
@@ -98,9 +109,15 @@ export default function CreditCard() {
   function handleInputFocus(e) {
     setData({ ...data, focused: e.target.name });
   }
-  if (hasTicket === "false") {
+  if (hasPaid === "false") {
     return (
       <>
+        <StyledHeader variant="h4">Ingresso e pagamento</StyledHeader>
+        <Subttitle>Ingresso escolhido</Subttitle>
+        <OrderSummary>
+          <span>Modalidade + Acomodação</span>
+          <p>R$ preço</p>
+        </OrderSummary>
         <Subttitle>Pagamento</Subttitle>
         <Container>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -192,7 +209,7 @@ export default function CreditCard() {
         </Container>
       </>
     );
-  } else if (hasTicket === "true") {
+  } else if (hasPaid === "true") {
     return (
       <>
         <Subttitle>Pagamento</Subttitle>
@@ -210,6 +227,34 @@ export default function CreditCard() {
   }
 }
 
+const StyledHeader = styled(Typography)`
+  margin-bottom: 36px !important;
+`;
+
+const OrderSummary = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 290px;
+  height: 108px;
+  background: #ffeed2;
+  border-radius: 20px;
+
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0em;
+  color: #454545;
+
+  p {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 16px;
+    color: #898989;
+  }
+`;
 const Container = styled.div`
   @media (max-width: 600px) {
     form {
@@ -273,7 +318,7 @@ const Subttitle = styled.div`
   width: 100%;
   text-align: left;
   font-size: 1.25rem;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.0075em;
@@ -289,7 +334,7 @@ const Subttitle = styled.div`
 const CheckoutContainer = styled.div`
   display: flex;
   align-items: center;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   font-size: 16px;
   line-height: 19px;
   letter-spacing: 0em;

@@ -5,6 +5,7 @@ import useApi from "../../hooks/useApi";
 export default function BookingButton(props) {
   const { id, modality, accommodation, children } = props;
   const { payment } = useApi();
+  
   function bookTicket() {
     const newData = {
       modality: modality,
