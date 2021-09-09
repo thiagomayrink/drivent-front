@@ -10,18 +10,14 @@ export default function Payment() {
   const { userData } = useContext(UserContext);
 
   useEffect(() => {
-    payment
-      .getPaymentInformations(userData.user.id)
-      .then(response => {
-        if (response.status !== 200) {
-          return;
-        }
-        console.log(response.data);
-        if (response.data.purchase) {
-          setPaymentBooking(true);
-        }
-      })
-      .catch(err => console.log(err));
+    payment.getPaymentInformations(userData.user.id).then(response => {
+      if (response.status !== 200) {
+        return;
+      }
+      if (response.data.purchase) {
+        setPaymentBooking(true);
+      }
+    });
   }, []);
 
   return (
