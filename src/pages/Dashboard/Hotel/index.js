@@ -104,10 +104,12 @@ export default function Hotel() {
 const Cards = styled.div`
     display: flex;
     align-items: center;
+    overflow-x: auto;
 `;
 
 const Rooms = styled.div`
     display: flex;
+    flex-wrap: wrap;
 `;
 
 const Button = styled.button`
