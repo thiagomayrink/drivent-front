@@ -6,42 +6,68 @@ import UserContext from "../../../contexts/UserContext";
 import useApi from "../../../hooks/useApi";
 
 export default function Payment() {
-  const [paymentBooking, setPaymentBooking] = useState(false);
   const { payment } = useApi();
   const { userData, setUserData } = useContext(UserContext);
-  const { ticket } = userData;
+  const [paymentBooking, setPaymentBooking] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [paymentDone, setPaymentDone] = useState(false);
 
   useEffect(() => {
-    payment.getPaymentInformations(userData.enrollmentId).then((response) => {
-      const { accommodationId, modalityId, enrollmentId } = response.data;
-      if (accommodationId && modalityId) {
+    payment.getPaymentInformations(userData.user.id).then((response) => {
+      if (!response.data?.purchase) return;
+
+      const {
+        userId,
+        accommodationId,
+        modalityId,
+        enrollmentId,
+        totalPrice,
+        paymentDone,
+        accommodation: { name: accomodationName },
+        modality: { name: modalityName },
+      } = response.data?.purchase;
+
+      if (
+        !userData.accommodationId ||
+        !userData.modalityId ||
+        !userData.userId ||
+        !userData.enrollmentId
+      ) {
         setUserData({
           ...userData,
-          ticket: {
-            accommodationId: accommodationId,
-            modalityId: modalityId,
-          },
-          enrollmentId: enrollmentId,
+          userId,
+          accommodationId,
+          modalityId,
+          enrollmentId,
+          accomodationName,
+          modalityName,
         });
       }
 
-      const purchaseId = response?.data?.purchaseId;
-      if (!!purchaseId) {
-        setUserData({ ...userData, purchaseId: purchaseId });
+      setTotalPrice(totalPrice);
+      setPaymentDone(paymentDone);
+
+      if (accommodationId && modalityId && enrollmentId) {
         setPaymentBooking(true);
       }
     });
-    payment.getPaymentInformations().catch((err) => {
+
+    payment.getPaymentInformations(userData.user.id).catch((err) => {
       toast(err.response.status);
     });
   }, []);
-
   return (
     <>
       {paymentBooking === true ? (
-        <PaymentPage />
+        <PaymentPage
+          userId={userData.user.id}
+          totalPrice={totalPrice}
+          accomodationName={userData?.accomodationName}
+          modalityName={userData?.modalityName}
+          paymentDone={paymentDone}
+        />
       ) : (
-        <PaymentOptions enrollmentId={userData.enrollmentId} />
+        <PaymentOptions userId={userData.user.id} />
       )}
     </>
   );

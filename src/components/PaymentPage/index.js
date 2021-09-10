@@ -10,7 +10,7 @@ import {
 import { FaCheckCircle } from "react-icons/fa";
 
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import DateFnsUtils from "@date-io/date-fns";
 import { toast } from "react-toastify";
@@ -22,15 +22,20 @@ import { FormWrapper } from "./FormWrapper";
 import { InputWrapper } from "./InputWrapper";
 import { useForm } from "../../hooks/useForm";
 import { ErrorMsg } from "./ErrorMsg";
-import { validations as FormValidations } from "./FormValidations";
+import FormValidations from "./FormValidations";
 import UserContext from "../../contexts/UserContext";
 import { Typography } from "@material-ui/core";
+import { useHistory } from "react-router";
 
-export default function PaymentPage() {
+export default function PaymentPage(props) {
+  //prettier-ignore
+  const { userId, totalPrice, accomodationName, modalityName, paymentDone } = props;
+
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
-  const [hasPaid, setHasPaid] = useState("false"); //rollback to false before commit;
+
   const { payment } = useApi();
+  const history = useHistory();
 
   const {
     handleSubmit,
@@ -50,26 +55,31 @@ export default function PaymentPage() {
         expiry: data.expiry,
         cvc: data.cvc,
       };
+      if (newData.name && newData.number && newData.expiry && newData.cvc) {
+        const purchaseData = {
+          accommodationId: userData.accommodationId,
+          modalityId: userData.modalityId,
+          userId: userId,
+          paymentDone: true,
+        };
 
-      payment
-        .save(newData)
-        .then((response) => {
-          toast("Pagamento realizado com sucesso!");
-          const purchaseId = response?.data?.purchaseId;
-          //prettier-ignore
-          if (!!purchaseId) setUserData({ ...userData, purchaseId: purchaseId });
-          if (!purchaseId) toast("Não foi possível realizar o pagamento");
-          setDynamicInputIsLoading(false);
-        })
-        .catch((error) => {
-          if (error.response?.data?.details) {
-            for (const detail of error.response.data.details) {
-              toast(detail);
+        payment
+          .process(purchaseData)
+          .then(() => {
+            setUserData({ ...userData, paymentDone: true });
+            toast("Ingresso reservado com sucesso!");
+            setTimeout(() => history.go(0), 1000);
+          })
+          .catch((error) => {
+            if (error.response?.data?.details) {
+              for (const detail of error.response.data.details) {
+                toast(detail);
+              }
+            } else {
+              toast("Não foi possível realizar o pagamento!");
             }
-          } else {
-            toast("Não foi possível realizar o pagamento");
-          }
-        });
+          });
+      }
     },
 
     initialValues: {
@@ -83,23 +93,6 @@ export default function PaymentPage() {
     },
   });
 
-  // useEffect(() => {
-  //   payment.getPaymentInformations().then(response => {
-  //     if (response.status !== 200) {
-  //       return;
-  //     }
-  //     const ticketId = response?.data?.ticketId;
-  //
-  //     if(!!ticketId){
-  //       setUserData({ ...userData, ticketId: ticketId })
-  //       setHasPaid(true)
-  //     };
-  //     if (!ticketId) {
-  //       setHasPaid(false);
-  //     }
-  //   });
-  // }, []);
-
   function handleCallback({ issuer }, _isValid) {
     if (issuer !== "unknown") {
       setData({ ...data, issuer: issuer });
@@ -109,107 +102,114 @@ export default function PaymentPage() {
   function handleInputFocus(e) {
     setData({ ...data, focused: e.target.name });
   }
-  if (hasPaid === "false") {
+
+  if (!paymentDone && modalityName && accomodationName) {
     return (
       <>
         <StyledHeader variant="h4">Ingresso e pagamento</StyledHeader>
         <Subttitle>Ingresso escolhido</Subttitle>
         <OrderSummary>
-          <span>Modalidade + Acomodação</span>
-          <p>R$ preço</p>
+          <span>
+            {modalityName === "presential" ? "Presencial" : "Online"} +{" "}
+            {accomodationName === "withHotel" ? "Com Hotel" : "Sem Hotel"}
+          </span>
+          <p>R$ {totalPrice / 100}</p>
         </OrderSummary>
         <Subttitle>Pagamento</Subttitle>
         <Container>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <CardContainer>
-              <Card
-                cvc={data.cvc}
-                expiry={data.expiry}
-                focused={data.focused}
-                name={data.name}
-                number={data.number}
-                callback={handleCallback}
-              />
-              <FormWrapper onSubmit={handleSubmit}>
-                <StyledInputWraper>
-                  <Input
-                    type="tel"
-                    name="number"
-                    placeholder="Número do Cartão"
-                    pattern="[\d| ]{16,22}"
-                    value={data.number}
-                    required
-                    onFocus={handleInputFocus}
-                    onChange={(e) =>
-                      customHandleChange(
-                        "number",
-                        formatCreditCardNumber
-                      )(e.target.value)
-                    }
-                  />
-                  {errors.number && <ErrorMsg>{errors.number}</ErrorMsg>}
-                  <p>E.g.: 49..., 51..., 36..., 37...</p>
-                </StyledInputWraper>
-                <StyledInputWraper>
-                  <Input
-                    type="text"
-                    name="name"
-                    placeholder="Nome"
-                    value={data.name}
-                    required
-                    onFocus={handleInputFocus}
-                    onChange={handleChange("name")}
-                  />
-                  {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>}
-                </StyledInputWraper>
-                <InputContainer>
+            <FormWrapper onSubmit={handleSubmit}>
+              <CardContainer>
+                <Card
+                  cvc={data.cvc}
+                  expiry={data.expiry}
+                  focused={data.focused}
+                  name={data.name}
+                  number={data.number}
+                  callback={handleCallback}
+                />
+
+                <div>
                   <StyledInputWraper>
                     <Input
                       type="tel"
-                      name="expiry"
-                      placeholder="Válido até"
-                      pattern="\d\d/\d\d"
-                      value={data.expiry}
+                      name="number"
+                      placeholder="Número do Cartão"
+                      pattern="[\d| ]{16,22}"
+                      value={data.number}
                       required
                       onFocus={handleInputFocus}
                       onChange={(e) =>
                         customHandleChange(
-                          "expiry",
-                          formatExpirationDate
+                          "number",
+                          formatCreditCardNumber
                         )(e.target.value)
                       }
                     />
-                    {errors.expiry && <ErrorMsg>{errors.expiry}</ErrorMsg>}
+                    {errors.number && <ErrorMsg>{errors.number}</ErrorMsg>}
+                    <p>E.g.: 49..., 51..., 36..., 37...</p>
                   </StyledInputWraper>
                   <StyledInputWraper>
                     <Input
-                      type="tel"
-                      name="cvc"
-                      placeholder="CVC"
-                      pattern="\d{3,4}"
-                      value={data.cvc}
+                      type="text"
+                      name="name"
+                      placeholder="Nome"
+                      value={data.name}
                       required
                       onFocus={handleInputFocus}
-                      onChange={(e) =>
-                        customHandleChange("cvc", formatCVC)(e.target.value)
-                      }
+                      onChange={handleChange("name")}
                     />
-                    {errors.cvc && <ErrorMsg>{errors.cvc}</ErrorMsg>}
+                    {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>}
                   </StyledInputWraper>
-                </InputContainer>
-                <input type="hidden" name="issuer" value={data.issuer} />
-              </FormWrapper>
-            </CardContainer>
-            <SubmitContainer>
-              <PaymentButton disabled={dynamicInputIsLoading} type="submit">
-                FINALIZAR PAGAMENTO
-              </PaymentButton>
-            </SubmitContainer>
+                  <InputContainer>
+                    <StyledInputWraper>
+                      <Input
+                        type="tel"
+                        name="expiry"
+                        placeholder="Válido até"
+                        pattern="\d\d/\d\d"
+                        value={data.expiry}
+                        required
+                        onFocus={handleInputFocus}
+                        onChange={(e) =>
+                          customHandleChange(
+                            "expiry",
+                            formatExpirationDate
+                          )(e.target.value)
+                        }
+                      />
+                      {errors.expiry && <ErrorMsg>{errors.expiry}</ErrorMsg>}
+                    </StyledInputWraper>
+                    <StyledInputWraper>
+                      <Input
+                        type="tel"
+                        name="cvc"
+                        placeholder="CVC"
+                        pattern="\d{3,4}"
+                        value={data.cvc}
+                        required
+                        onFocus={handleInputFocus}
+                        onChange={(e) =>
+                          customHandleChange("cvc", formatCVC)(e.target.value)
+                        }
+                      />
+                      {errors.cvc && <ErrorMsg>{errors.cvc}</ErrorMsg>}
+                    </StyledInputWraper>
+                  </InputContainer>
+                  <input type="hidden" name="issuer" value={data.issuer} />
+                </div>
+              </CardContainer>
+              <SubmitContainer>
+                <PaymentButton disabled={dynamicInputIsLoading} type="submit">
+                  FINALIZAR PAGAMENTO
+                </PaymentButton>
+              </SubmitContainer>
+            </FormWrapper>
           </MuiPickersUtilsProvider>
         </Container>
       </>
     );
-  } else if (hasPaid === "true") {
+  } else if (paymentDone) {
     return (
       <>
         <Subttitle>Pagamento</Subttitle>

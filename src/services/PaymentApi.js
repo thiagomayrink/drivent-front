@@ -1,6 +1,5 @@
 import AuthenticatedApi from "./AuthenticatedApi";
 import api from "./api";
-
 export default class PaymentApi extends AuthenticatedApi {
   save(body) {
     return api.post("/payment", body, {
@@ -10,8 +9,16 @@ export default class PaymentApi extends AuthenticatedApi {
     });
   }
 
-  getPaymentInformations() {
-    return api.get("/payment", {
+  process(body) {
+    return api.post("/payment/pay", body, {
+      headers: {
+        ...this.getAuthorizationHeader(),
+      },
+    });
+  }
+
+  getPaymentInformations(id) {
+    return api.get(`/payment/${id}`, {
       headers: {
         ...this.getAuthorizationHeader(),
       },

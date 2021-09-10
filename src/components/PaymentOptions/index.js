@@ -9,18 +9,19 @@ import BookingButton from "./BookingButton";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
 
-export default function PaymentOptions() {
+export default function PaymentOptions(props) {
+  const { userId } = props;
   const [subscriptionDone, setSubscriptionDone] = useState(false);
   const [modality, setModality] = useState(false);
   const [accommodation, setAccommodation] = useState(false);
   const { payment } = useApi();
 
   useEffect(() => {
-    payment.getPaymentInformations().then(response => {
+    payment.getPaymentInformations(userId).then(response => {
       toast(response.data.status);
       setSubscriptionDone(true);
     });
-    payment.getPaymentInformations().catch(err => {
+    payment.getPaymentInformations(userId).catch(err => {
       toast(err.response.status);
       setSubscriptionDone(true);
     });
@@ -102,6 +103,7 @@ export default function PaymentOptions() {
                 id={"presential"}
                 modality={modality}
                 accommodation={accommodation}
+                userId={userId}
               >
                 RESERVAR INGRESSO
               </BookingButton>
@@ -118,6 +120,7 @@ export default function PaymentOptions() {
               id={"online"}
               modality={modality}
               accommodation={accommodation}
+              userId={userId}
             >
               RESERVAR INGRESSO
             </BookingButton>

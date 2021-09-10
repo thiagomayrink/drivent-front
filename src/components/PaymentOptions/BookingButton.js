@@ -3,13 +3,10 @@ import styled from "styled-components";
 import useApi from "../../hooks/useApi";
 import { useHistory } from "react-router-dom";
 import { useContext } from "react";
-import DashboardContext from "../../contexts/DashboardContext";
 import UserContext from "../../contexts/UserContext";
 
 export default function BookingButton(props) {
-  const { id, modality, accommodation, children } = props;
-
-  const { dashboardData } = useContext(DashboardContext);
+  const { id, userId, modality, accommodation, children } = props;
   const { userData, setUserData } = useContext(UserContext);
 
   const { payment } = useApi();
@@ -21,17 +18,16 @@ export default function BookingButton(props) {
 
     setUserData({
       ...userData,
-      ticket: {
-        modality: { id: modalityId, name: modality },
-        accomodation: { id: accommodationId, name: accommodation },
-      },
+      modalityName: modality,
+      accomodationName: accommodation,
     });
 
     const newData = {
-      enrollmentId: userData.enrollmentId,
+      userId: userId,
       modalityId: modalityId,
       accommodationId: accommodationId,
     };
+
     payment
       .save(newData)
       .then(() => {
