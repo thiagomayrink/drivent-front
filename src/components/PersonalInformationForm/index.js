@@ -62,6 +62,7 @@ export default function PersonalInformationForm() {
         .save(newData)
         .then(() => {
           toast("Salvo com sucesso!");
+          setUserData({ ...userData, subscriptionDone: true });
         })
         .catch((error) => {
           if (error.response?.data?.details) {

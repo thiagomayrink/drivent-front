@@ -9,7 +9,6 @@ import UserContext from "../../../contexts/UserContext";
 
 import Typography from "@material-ui/core/Typography";
 import styled from "styled-components";
-import DashboardContext from "../../../contexts/DashBoardContext";
 
 export default function Activities() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);
@@ -18,11 +17,9 @@ export default function Activities() {
   const { payment } = useApi();
 
   const { userData } = useContext(UserContext);
-
-  const { dashboardData } = useContext(DashboardContext);
-
+  
   useEffect(() => {
-    if (dashboardData.subscriptionDone === true) {
+    if (userData?.subscriptionDone === true) {
       setSubscriptionDone(true);
     }
 
