@@ -18,10 +18,13 @@ export default function Payment() {
 
   useEffect(() => {
     payment.getPaymentInformations(userData.user.id).then((response) => {
-      if (userData.subscriptionDone === true) {
+      if(userData?.subscriptionDone) {
         setSubscriptionDone(true);
       }
-
+      if(!response.data.purchase) {
+        return;
+      }
+      setSubscriptionDone(true);
       const {
         userId,
         accommodationId,

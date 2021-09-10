@@ -5,10 +5,13 @@ import HotelsLayout from "../../layouts/Hotels";
 export default function NoSubscriptionDone() {
   return (
     <HotelsLayout>
-      <StyledSubtitle variant="h6" className="center">
+      <Container>
+        <StyledSubtitle variant="h6" className="center">
         Sua modalidade de ingresso não inclui hospedagem. Prossiga para a
         escolha de atividades.
-      </StyledSubtitle>
+        </StyledSubtitle>
+      </Container>
+
     </HotelsLayout>
   );
 }
@@ -28,4 +31,12 @@ const StyledSubtitle = styled(Typography)`
   @media (max-width: 600px) {
     width: 300px;
   }
+`;
+
+const Container = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;

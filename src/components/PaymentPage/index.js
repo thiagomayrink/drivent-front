@@ -224,6 +224,14 @@ export default function PaymentPage(props) {
   } else if (paymentDone) {
     return (
       <>
+        <Subttitle>Ingresso escolhido</Subttitle>
+        <OrderSummary>
+          <span>
+            {modalityName === "presential" ? "Presencial" : "Online"} +{" "}
+            {accomodationName === "withHotel" ? "Com Hotel" : "Sem Hotel"}
+          </span>
+          <p>R$ {totalPrice / 100}</p>
+        </OrderSummary>
         <Subttitle>Pagamento</Subttitle>
         <CheckoutContainer>
           <CheckoutIcon />

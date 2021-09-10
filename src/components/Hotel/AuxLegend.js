@@ -14,5 +14,5 @@ const Container = styled.p`
     font-size: 20px;
     line-height: 23px;
     color: #8E8E8E;
-    margin: 24px 0;
+    margin: 14px 0;
 `;

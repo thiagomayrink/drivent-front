@@ -9,18 +9,16 @@ import UserContext from "../../../contexts/UserContext";
 
 import Typography from "@material-ui/core/Typography";
 import styled from "styled-components";
-import DashboardContext from "../../../contexts/DashBoardContext";
 
 export default function HotelIntegration() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);
-  const [paymentDone, setPaymentDone] = useState(true);
+  const [paymentDone, setPaymentDone] = useState(false);
   const [onlineChoose, setOnlineChoose] = useState(false);
   const { payment } = useApi();
   const { userData } = useContext(UserContext);
-  const { dashboardData } = useContext(DashboardContext);
 
   useEffect(() => {
-    if (dashboardData.subscriptionDone === true) {
+    if (userData?.subscriptionDone === true) {
       setSubscriptionDone(true);
     }
 
@@ -29,7 +27,7 @@ export default function HotelIntegration() {
         return;
       }
       if (response.data.purchase) {
-        if (response.data.purchase.modalityId === 2) {
+        if (response.data.purchase.modalityId === 2 || response.data.purchase.accommodationId === 1) {
           setOnlineChoose(true);
         }
         if (response.data.purchase.paymentDone === true) {
@@ -62,7 +60,7 @@ const HotelContainer = styled.div`
   flex-direction: column;
   height: 100%;
 
-  div {
+  > div {
     font-size: 34px;
     line-height: 40px;
     height: 100%;
