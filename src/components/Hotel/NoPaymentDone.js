@@ -8,7 +8,7 @@ export default function NoPaymentDone() {
       <Container>
         <StyledSubtitle variant="h6" className="center">
         Você precisa ter confirmado pagamento antes de fazer a escolha de
-        hospedagem
+        hospedagem.
         </StyledSubtitle>
       </Container>
     </HotelsLayout>

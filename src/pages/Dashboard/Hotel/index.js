@@ -25,7 +25,6 @@ export default function HotelIntegration() {
     }
 
     payment.getPaymentInformations(userData.user.id).then(response => {
-      console.log(response.data);
       if (response.status !== 200) {
         return;
       }
