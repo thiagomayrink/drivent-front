@@ -81,8 +81,7 @@ export default function Hotel() {
   }
 
   return (
-    <HotelsLayout>
-      <h2>Escolha de hotel e quarto</h2>
+    <HotelLayout>
       {reservedInfos ? (
         <>
           <AuxLegend>Você já escolheu seu quarto:</AuxLegend>
@@ -118,7 +117,7 @@ export default function Hotel() {
                 ))}
               </Rooms>
               {roomId !== 0 ? (
-                <Button onClick={() => reserveRoom()}> RESERVAR QUARTO </Button>
+                <Button onClick={() => reserveRoom()}> {changingRoom ? "TROCAR DE QUARTO" : "RESERVAR QUARTO"} </Button>
               ) : (
                 ""
               )}
@@ -128,7 +127,7 @@ export default function Hotel() {
           )}
         </>
       )}
-    </HotelsLayout>
+    </HotelLayout>
   );
 }
 
@@ -136,16 +135,17 @@ const Cards = styled.div`
   display: flex;
   align-items: center;
   overflow-x: auto;
-  flex-wrap: wrap;
 `;
 
 const Rooms = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  height: max-content;
 `;
 
 const Button = styled.button`
   width: 182px;
-  height: 37px;
+  min-height: 37px;
   background: #e0e0e0;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -158,9 +158,38 @@ const Button = styled.button`
 
   color: #000000;
   cursor: pointer;
-  margin-top: 46px;
+  margin: 36px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   :hover {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
   }
+`;
+
+const HotelLayout = styled.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    padding: 0;
+
+    & > * {
+        text-align: initial;
+    }
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+    }
+
+    h2{
+        font-style: normal;
+        font-weight: normal;
+        font-size: 34px;
+        line-height: 40px;
+        color: #000000;
+    }
 `;

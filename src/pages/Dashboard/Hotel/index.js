@@ -62,7 +62,7 @@ const HotelContainer = styled.div`
   flex-direction: column;
   height: 100%;
 
-  div {
+  > div {
     font-size: 34px;
     line-height: 40px;
     height: 100%;

@@ -20,11 +20,6 @@ const ContainerCard = styled.div`
     cursor: pointer;
     margin-right: 20px;
 
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    color: #3C3C3C;
-
     img{
         width: 168px;
         height: 109px;
@@ -37,7 +32,15 @@ const ContainerCard = styled.div`
         color: #343434;
     }
 
-    strong{
-        font-weight: bold;
+    div{
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 14px;
+        color: #3C3C3C;
+        display: flex;
+        flex-direction: column;
+        strong{
+            font-weight: bold;
+        }
     }
 `;
