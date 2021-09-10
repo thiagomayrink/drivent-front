@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import DateFnsUtils from "@date-io/date-fns";
 import Typography from "@material-ui/core/Typography";
@@ -20,12 +20,14 @@ import { InputWrapper } from "./InputWrapper";
 import { ErrorMsg } from "./ErrorMsg";
 import { ufList } from "./ufList";
 import FormValidations from "./FormValidations";
+import UserContext from "../../contexts/UserContext";
 
 dayjs.extend(CustomParseFormat);
 
 export default function PersonalInformationForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const { enrollment, cep } = useApi();
+  const { userData, setUserData } = useContext(UserContext);
 
   const {
     handleSubmit,
@@ -37,7 +39,7 @@ export default function PersonalInformationForm() {
   } = useForm({
     validations: FormValidations,
 
-    onSubmit: data => {
+    onSubmit: (data) => {
       const newData = {
         name: data.name,
         cpf: data.cpf,
@@ -61,7 +63,7 @@ export default function PersonalInformationForm() {
         .then(() => {
           toast("Salvo com sucesso!");
         })
-        .catch(error => {
+        .catch((error) => {
           if (error.response?.data?.details) {
             for (const detail of error.response.data.details) {
               toast(detail);
@@ -88,12 +90,22 @@ export default function PersonalInformationForm() {
   });
 
   useEffect(() => {
-    enrollment.getPersonalInformations().then(response => {
+    enrollment.getPersonalInformations().then((response) => {
       if (response.status !== 200) {
         return;
       }
+      const {
+        id: enrollmentId,
+        name,
+        cpf,
+        birthday,
+        phone,
+        address,
+      } = response.data;
 
-      const { name, cpf, birthday, phone, address } = response.data;
+      if (enrollmentId) {
+        setUserData({ ...userData, subscriptionDone: true });
+      }
 
       setData({
         name,
@@ -179,10 +191,10 @@ export default function PersonalInformationForm() {
               value={
                 data.birthday && dayjs(data.birthday, "DD-MM-YYYY").toString()
               }
-              onChange={date => {
+              onChange={(date) => {
                 customHandleChange(
                   "birthday",
-                  d => d && dayjs(d).format("DD-MM-YYYY")
+                  (d) => d && dayjs(d).format("DD-MM-YYYY")
                 )(date);
               }}
             />
@@ -206,7 +218,7 @@ export default function PersonalInformationForm() {
               name="cep"
               mask="99999-999"
               value={data.cep || ""}
-              onChange={e => {
+              onChange={(e) => {
                 handleChange("cep")(e);
                 handleCepChanges(e);
               }}
@@ -224,7 +236,7 @@ export default function PersonalInformationForm() {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {ufList.map(uf => (
+              {ufList.map((uf) => (
                 <MenuItem value={uf.name} key={uf.id}>
                   <em>{uf.name}</em>
                 </MenuItem>
