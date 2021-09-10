@@ -6,10 +6,10 @@ import Hotel from "../../../components/Hotel";
 import { useEffect, useState, useContext } from "react";
 import useApi from "../../../hooks/useApi";
 import UserContext from "../../../contexts/UserContext";
-import DashboardContext from "../../../contexts/DashboardContext";
 
 import Typography from "@material-ui/core/Typography";
 import styled from "styled-components";
+import DashboardContext from "../../../contexts/DashBoardContext";
 
 export default function HotelIntegration() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);

@@ -15,12 +15,9 @@ export const useForm = (options) => {
 
   const customHandleChange = (key, sanitizeFn) => (inputValue) => {
     const value = sanitizeFn ? sanitizeFn(inputValue) : inputValue;
-    setData({
-      ...data,
-      [key]: value,
-    });
+    setData({ ...data, [key]: value });
   };
-
+  //prettier-ignore
   const handleSubmit = async(event) => {
     event.preventDefault();
     const validations = options?.validations;
@@ -60,7 +57,7 @@ export const useForm = (options) => {
       options.onSubmit(data);
     }
   };
-
+  
   return {
     setData,
     data,

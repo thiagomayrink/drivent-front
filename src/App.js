@@ -14,7 +14,6 @@ import EventInfoContext, {
   EventInfoProvider,
 } from "./contexts/EventInfoContext";
 import UserContext, { UserProvider } from "./contexts/UserContext";
-import { DashboardProvider } from "./contexts/DashboardContext";
 
 export default function App() {
   return (
@@ -43,11 +42,10 @@ export default function App() {
               >
                 <SignIn />
               </ConditionalRoute>
-              <DashboardProvider>
-                <ConditionalRoute check={ensureAuthenticated} path="/dashboard">
-                  <Dashboard />
-                </ConditionalRoute>
-              </DashboardProvider>
+
+              <ConditionalRoute check={ensureAuthenticated} path="/dashboard">
+                <Dashboard />
+              </ConditionalRoute>
             </Switch>
           </Router>
         </UserProvider>

@@ -1,33 +1,66 @@
 import PaymentOptions from "../../../components/PaymentOptions";
-import PaymentBooking from "../../../components/PaymentBooking";
 import NoSubscriptionDone from "../../../components/PaymentOptions/NoSubscriptionDone";
-import { useEffect, useState, useContext } from "react";
-import useApi from "../../../hooks/useApi";
-import UserContext from "../../../contexts/UserContext";
-import DashboardContext from "../../../contexts/DashboardContext";
-
 import Typography from "@material-ui/core/Typography";
 import styled from "styled-components";
+import { useEffect, useState, useContext } from "react";
+import { toast } from "react-toastify";
+import PaymentPage from "../../../components/PaymentPage";
+import UserContext from "../../../contexts/UserContext";
+import useApi from "../../../hooks/useApi";
 
 export default function Payment() {
-  const [subscriptionDone, setSubscriptionDone] = useState(false);
-  const [paymentBooking, setPaymentBooking] = useState(false);
   const { payment } = useApi();
-  const { userData } = useContext(UserContext);
-  const { dashboardData } = useContext(DashboardContext);
+  const { userData, setUserData } = useContext(UserContext);
+  const [paymentBooking, setPaymentBooking] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [paymentDone, setPaymentDone] = useState(false);
+  const [subscriptionDone, setSubscriptionDone] = useState(false);
 
   useEffect(() => {
-    if (dashboardData.subscriptionDone === true) {
-      setSubscriptionDone(true);
-    }
-
-    payment.getPaymentInformations(userData.user.id).then(response => {
-      if (response.status !== 200) {
-        return;
+    payment.getPaymentInformations(userData.user.id).then((response) => {
+      if (userData.subscriptionDone === true) {
+        setSubscriptionDone(true);
       }
-      if (response.data.purchase) {
+
+      const {
+        userId,
+        accommodationId,
+        modalityId,
+        enrollmentId,
+        totalPrice,
+        paymentDone,
+        accommodation: { name: accomodationName },
+        modality: { name: modalityName },
+      } = response.data?.purchase;
+
+      if (
+        !userData.accommodationId ||
+        !userData.modalityId ||
+        !userData.userId ||
+        !userData.enrollmentId
+      ) {
+        setUserData({
+          ...userData,
+          userId,
+          accommodationId,
+          modalityId,
+          enrollmentId,
+          accomodationName,
+          modalityName,
+        });
+        setTotalPrice(totalPrice);
+        setPaymentDone(paymentDone);
+      }
+
+      if (accommodationId && modalityId && enrollmentId) {
+        setTotalPrice(totalPrice);
+        setPaymentDone(paymentDone);
         setPaymentBooking(true);
       }
+    });
+
+    payment.getPaymentInformations(userData.user.id).catch((err) => {
+      toast(err.response.status);
     });
   }, []);
 
@@ -38,14 +71,21 @@ export default function Payment() {
         {subscriptionDone === false ? (
           <NoSubscriptionDone />
         ) : paymentBooking === true ? (
-          <PaymentBooking />
+          <PaymentPage
+            userId={userData.user.id}
+            totalPrice={totalPrice}
+            accomodationName={userData?.accomodationName}
+            modalityName={userData?.modalityName}
+            paymentDone={paymentDone}
+          />
         ) : (
-          <PaymentOptions />
+          <PaymentOptions userId={userData.user.id} />
         )}
       </div>
     </PaymentContainer>
   );
 }
+
 const PaymentContainer = styled.div`
   display: flex;
   flex-direction: column;

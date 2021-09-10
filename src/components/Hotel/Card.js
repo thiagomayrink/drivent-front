@@ -5,19 +5,19 @@ export default function Card({ hotelId, setHotelId, data }) {
 
   function getHotelRoomsTypeText() {
     let text;
-    switch(size) {
-    case 1:
-      text = "Single";
-      break;
-    case 2:
-      text = "Single e Double";
-      break;
-    case 3:
-      text = "Single, Double e Triple";
-      break;
-    default: 
-      text = "";
-      break;
+    switch (size) {
+      case 1:
+        text = "Single";
+        break;
+      case 2:
+        text = "Single e Double";
+        break;
+      case 3:
+        text = "Single, Double e Triple";
+        break;
+      default:
+        text = "";
+        break;
     }
     return text;
   }
