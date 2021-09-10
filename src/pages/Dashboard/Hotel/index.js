@@ -1,87 +1,74 @@
-import { useEffect, useState } from "react";
-import Card from "../../../components/Hotel/Card";
-import HotelsLayout from "../../../layouts/Hotels";
-import styled from "styled-components";
-import AuxLegend from "../../../components/Hotel/AuxLegend";
-import Room from "../../../components/Hotel/Room";
+import NoSubscriptionDone from "../../../components/Hotel/NoSubscriptionDone";
+import OnlineChoose from "../../../components/Hotel/OnlineChoose";
+import NoPaymentDone from "../../../components/Hotel/NoPaymentDone";
+import Hotel from "../../../components/Hotel";
+
+import { useEffect, useState, useContext } from "react";
 import useApi from "../../../hooks/useApi";
-import { toast } from "react-toastify";
+import UserContext from "../../../contexts/UserContext";
+import DashboardContext from "../../../contexts/DashboardContext";
 
-export default function Hotel() {
-  const [hotels, setHotels] = useState([]);
-  const [rooms, setRooms] = useState([]);
-  const [hotelId, setHotelId] = useState(0);
-  const [roomId, setRoomId] = useState(0);
+import Typography from "@material-ui/core/Typography";
+import styled from "styled-components";
 
-  const api = useApi();
+export default function HotelIntegration() {
+  const [subscriptionDone, setSubscriptionDone] = useState(false);
+  const [paymentDone, setPaymentDone] = useState(false);
+  const [onlineChoose, setOnlineChoose] = useState(false);
+  const { payment } = useApi();
+  const { userData } = useContext(UserContext);
+  const { dashboardData } = useContext(DashboardContext);
 
   useEffect(() => {
-    updateHotels();
+    if (dashboardData.subscriptionDone === true) {
+      setSubscriptionDone(true);
+    }
+
+    payment.getPaymentInformations(userData.user.id).then(response => {
+      if (response.status !== 200) {
+        return;
+      }
+      if (response.data.purchase) {
+        if (response.data.purchase.modalityId === 2) {
+          setOnlineChoose(true);
+        }
+        if (response.data.purchase.paymentDone === true) {
+          setPaymentDone(true);
+        }
+      }
+    });
   }, []);
 
-  useEffect(() => {
-    updateRooms();
-  }, [hotelId]);
-
-  function updateRooms() {
-    api.hotel.getHotelRooms(hotelId).then( rooms => setRooms(rooms));
-  }
-
-  function updateHotels() {
-    api.hotel.getHotels().then( hotels => setHotels(hotels));
-  }
-
-  function reserveRoom() {
-    api.hotel.reserveRoom(roomId).then(() => {
-      toast("Reservado com sucesso!");
-      updateRooms();
-    }).catch( () => toast("Falha ao reservar!"));
-  }
   return (
-    <HotelsLayout>
-      <h2>Escolha de hotel e quarto</h2>
-      <AuxLegend>Primeiro, escolha seu hotel</AuxLegend>
-      <Cards>{hotels.map(hotel => <Card key={hotel.id} data={hotel} hotelId={hotelId} setHotelId={setHotelId}/>)}</Cards>
-      {hotelId !== 0 ? 
-        <>
-          <AuxLegend>Ótima pedida! Agora escolha seu quarto:</AuxLegend>
-          <Rooms> {rooms.map(room => <Room key={room.id} room={room} roomId={roomId} setRoomId={setRoomId}/>)}</Rooms>
-          {roomId !== 0 ?
-            <Button onClick={() => reserveRoom()}> RESERVAR QUARTO </Button>
-            : ""}
-        </> 
-        : ""}
-    </HotelsLayout>
+    <HotelContainer>
+      <StyledHeader variant="h4"> Escolha de hotel e quarto</StyledHeader>
+      <div>
+        {subscriptionDone === false ? (
+          <NoSubscriptionDone />
+        ) : onlineChoose === true ? (
+          <OnlineChoose />
+        ) : paymentDone === false ? (
+          <NoPaymentDone />
+        ) : (
+          <Hotel />
+        )}
+      </div>
+    </HotelContainer>
   );
 }
 
-const Cards = styled.div`
+const HotelContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  div {
+    font-size: 34px;
+    line-height: 40px;
+    height: 100%;
     display: flex;
-    align-items: center;
+  }
 `;
-
-const Rooms = styled.div`
-    display: flex;
-`;
-
-const Button = styled.button`
-    width: 182px;
-    height: 37px;
-    background: #E0E0E0;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
-    border-radius: 4px;
-    border: none;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 16px;
-    text-align: center;
-
-    color: #000000;
-    cursor: pointer;
-    margin-top: 46px;
-    
-    :hover{
-        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
-    }
+const StyledHeader = styled(Typography)`
+  margin-bottom: 36px !important;
 `;

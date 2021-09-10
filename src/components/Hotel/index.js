@@ -42,7 +42,6 @@ export default function Hotel() {
   }
   return (
     <HotelsLayout>
-      <h2>Escolha de hotel e quarto</h2>
       <AuxLegend>Primeiro, escolha seu hotel</AuxLegend>
       <Cards>
         {hotels.map(hotel => (
