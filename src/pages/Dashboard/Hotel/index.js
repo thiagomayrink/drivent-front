@@ -13,7 +13,7 @@ import styled from "styled-components";
 
 export default function HotelIntegration() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);
-  const [paymentDone, setPaymentDone] = useState(true);
+  const [paymentDone, setPaymentDone] = useState(false);
   const [onlineChoose, setOnlineChoose] = useState(false);
   const { payment } = useApi();
   const { userData } = useContext(UserContext);
@@ -25,6 +25,7 @@ export default function HotelIntegration() {
     }
 
     payment.getPaymentInformations(userData.user.id).then(response => {
+      console.log(response.data);
       if (response.status !== 200) {
         return;
       }
