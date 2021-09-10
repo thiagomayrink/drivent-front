@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Card from "./Card";
+import ConfirmCard from "./ConfirmCard";
 import HotelsLayout from "../../layouts/Hotels";
 import styled from "styled-components";
 import AuxLegend from "./AuxLegend";
 import Room from "./Room";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
+import UserContext from "../../contexts/UserContext";
 
 export default function Hotel() {
+  const { userData } = useContext(UserContext);
+  const [reservedInfos, setReservedInfos] = useState("");
+  const [changingRoom, setChangingRoom] = useState(false);
   const [hotels, setHotels] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [hotelId, setHotelId] = useState(0);
@@ -16,6 +21,7 @@ export default function Hotel() {
   const api = useApi();
 
   useEffect(() => {
+    checkUserInfos();
     updateHotels();
   }, []);
 
@@ -23,58 +29,104 @@ export default function Hotel() {
     updateRooms();
   }, [hotelId]);
 
-  function updateRooms() {
-    api.hotel.getHotelRooms(hotelId).then(rooms => setRooms(rooms));
-  }
-
   function updateHotels() {
     api.hotel.getHotels().then(hotels => setHotels(hotels));
   }
 
-  function reserveRoom() {
-    api.hotel
-      .reserveRoom(roomId)
-      .then(() => {
-        toast("Reservado com sucesso!");
-        updateRooms();
-      })
-      .catch(() => toast("Falha ao reservar!"));
+  function checkUserInfos() {
+    api.hotel.userRoomInfos(userData.user.id).then(infos => {
+      setReservedInfos(infos);
+    });
   }
+
+  function updateRooms() {
+    api.hotel.getHotelRooms(hotelId).then(rooms => setRooms(rooms));
+  }
+
+  function reserveRoom() {
+    if (changingRoom) {
+      api.hotel
+        .changeRoom(roomId)
+        .then(() => {
+          toast("Troca efetuada com sucesso!");
+          setTimeout(() => {
+            setChangingRoom(false);
+            checkUserInfos();
+          }, 200);
+        })
+        .catch(() => {
+          toast("Falha ao trocar de quarto!");
+        });
+    } else {
+      api.hotel
+        .reserveRoom(roomId)
+        .then(() => {
+          toast("Reservado com sucesso!");
+          setTimeout(() => {
+            checkUserInfos();
+          }, 200);
+        })
+        .catch(e => {
+          if (e.response.status === 409)
+            return toast("Já possuí um quarto reservado!");
+          toast("Falha ao reservar!");
+        });
+    }
+  }
+
+  function changeRoom() {
+    setReservedInfos("");
+    setChangingRoom(true);
+    updateHotels();
+  }
+
   return (
     <HotelsLayout>
-      <AuxLegend>Primeiro, escolha seu hotel</AuxLegend>
-      <Cards>
-        {hotels.map(hotel => (
-          <Card
-            key={hotel.id}
-            data={hotel}
-            hotelId={hotelId}
-            setHotelId={setHotelId}
-          />
-        ))}
-      </Cards>
-      {hotelId !== 0 ? (
+      <h2>Escolha de hotel e quarto</h2>
+      {reservedInfos ? (
         <>
-          <AuxLegend>Ótima pedida! Agora escolha seu quarto:</AuxLegend>
-          <Rooms>
-            {" "}
-            {rooms.map(room => (
-              <Room
-                key={room.id}
-                room={room}
-                roomId={roomId}
-                setRoomId={setRoomId}
+          <AuxLegend>Você já escolheu seu quarto:</AuxLegend>
+          <ConfirmCard key={1} data={reservedInfos} />
+          <Button onClick={() => changeRoom()}> TROCAR DE QUARTO </Button>
+        </>
+      ) : (
+        <>
+          {" "}
+          <AuxLegend>Primeiro, escolha seu hotel</AuxLegend>
+          <Cards>
+            {hotels.map(hotel => (
+              <Card
+                key={hotel.id}
+                data={hotel}
+                hotelId={hotelId}
+                setHotelId={setHotelId}
               />
             ))}
-          </Rooms>
-          {roomId !== 0 ? (
-            <Button onClick={() => reserveRoom()}> RESERVAR QUARTO </Button>
+          </Cards>
+          {hotelId !== 0 ? (
+            <>
+              <AuxLegend>Ótima pedida! Agora escolha seu quarto:</AuxLegend>
+              <Rooms>
+                {" "}
+                {rooms.map(room => (
+                  <Room
+                    key={room.id}
+                    room={room}
+                    roomId={roomId}
+                    setRoomId={setRoomId}
+                  />
+                ))}
+              </Rooms>
+              {roomId !== 0 ? (
+                <Button onClick={() => reserveRoom()}> RESERVAR QUARTO </Button>
+              ) : (
+                ""
+              )}
+            </>
           ) : (
             ""
           )}
         </>
-      ) : (
-        ""
       )}
     </HotelsLayout>
   );
@@ -83,6 +135,8 @@ export default function Hotel() {
 const Cards = styled.div`
   display: flex;
   align-items: center;
+  overflow-x: auto;
+  flex-wrap: wrap;
 `;
 
 const Rooms = styled.div`

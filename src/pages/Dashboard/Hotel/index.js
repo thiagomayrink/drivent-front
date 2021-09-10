@@ -13,7 +13,7 @@ import styled from "styled-components";
 
 export default function HotelIntegration() {
   const [subscriptionDone, setSubscriptionDone] = useState(false);
-  const [paymentDone, setPaymentDone] = useState(false);
+  const [paymentDone, setPaymentDone] = useState(true);
   const [onlineChoose, setOnlineChoose] = useState(false);
   const { payment } = useApi();
   const { userData } = useContext(UserContext);

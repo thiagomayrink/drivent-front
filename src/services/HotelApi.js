@@ -27,4 +27,21 @@ export default class HotelApi extends AuthenticatedApi {
       }
     });
   }
+
+  async userRoomInfos(userId) {
+    const infos =  await api.get(`/hotel/user/${userId}`, {
+      headers: {
+        ...this.getAuthorizationHeader()
+      }
+    });
+    return infos.data;
+  }
+
+  async changeRoom(roomId) {
+    return api.patch(`hotel/${roomId}/rooms`, {}, {
+      headers: {
+        ...this.getAuthorizationHeader()
+      }
+    });
+  }
 }
