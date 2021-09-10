@@ -4,10 +4,9 @@ import Typography from "@material-ui/core/Typography";
 export default function Activity() {
   return (
     <>
-      <StyledHeader variant="h4"> Certificado </StyledHeader>
       <Container>
         <StyledSubtitle variant="h6" className="center">
-        Em breve...
+          Em breve...
         </StyledSubtitle>
       </Container>
     </>
@@ -32,11 +31,11 @@ const StyledSubtitle = styled(Typography)`
 `;
 
 const Container = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledHeader = styled(Typography)`
