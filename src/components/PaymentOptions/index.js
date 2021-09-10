@@ -6,7 +6,8 @@ import PaymentLayout from "../../layouts/Payment";
 import OptionsButton from "./OptionsButton";
 import BookingButton from "./BookingButton";
 
-export default function PaymentOptions() {
+export default function PaymentOptions(props) {
+  const { userId } = props;
   const [modality, setModality] = useState(false);
   const [accommodation, setAccommodation] = useState(false);
 
@@ -81,6 +82,7 @@ export default function PaymentOptions() {
                 id={"presential"}
                 modality={modality}
                 accommodation={accommodation}
+                userId={userId}
               >
                 RESERVAR INGRESSO
               </BookingButton>
@@ -97,6 +99,7 @@ export default function PaymentOptions() {
               id={"online"}
               modality={modality}
               accommodation={accommodation}
+              userId={userId}
             >
               RESERVAR INGRESSO
             </BookingButton>
