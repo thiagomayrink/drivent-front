@@ -19,7 +19,7 @@ const Page = styled.div`
     }
 
     @media (max-width: 600px) {
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     h2{
