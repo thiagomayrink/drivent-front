@@ -1,64 +1,45 @@
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Typography from "@material-ui/core/Typography";
 
-import PaymentLayout from "../../layouts/PaymentOptions";
+import PaymentLayout from "../../layouts/Payment";
 import OptionsButton from "./OptionsButton";
 import BookingButton from "./BookingButton";
 
-import DashboardContext from "../../contexts/DashboardContext";
-
 export default function PaymentOptions() {
-  const [subscriptionDone, setSubscriptionDone] = useState(false);
   const [modality, setModality] = useState(false);
   const [accommodation, setAccommodation] = useState(false);
 
-  const { dashboardData } = useContext(DashboardContext);
-
-  useEffect(() => {
-    if (dashboardData.subscriptionDone === undefined) {
-      return;
-    }
-    if (dashboardData.subscriptionDone) {
-      setSubscriptionDone(true);
-    }
-  }, []);
-
   return (
     <PaymentLayout>
-      <StyledHeader variant="h4">Ingresso e pagamento</StyledHeader>
-      <WithoutSubscriptionContainer show={subscriptionDone.toString()}>
-        <StyledSubtitle variant="h6" className="center">
-          Você precisa completar sua inscrição antes de prosseguir pra escolha
-          de ingresso
-        </StyledSubtitle>
-      </WithoutSubscriptionContainer>
-      <WithSubscriptionContainer show={subscriptionDone.toString()}>
+      <Container>
         <StyledSubtitle variant="h6">
           Primeiro, escolha sua modalidade de ingresso
         </StyledSubtitle>
-        <div>
-          <OptionsButton
-            id={"presential"}
-            modality={modality}
-            setModality={setModality}
-            accommodation={accommodation}
-            setAccommodation={setAccommodation}
-          >
-            <span>Presencial</span>
-            <span>R$ 250</span>
-          </OptionsButton>
-          <OptionsButton
-            id={"online"}
-            modality={modality}
-            setModality={setModality}
-            accommodation={accommodation}
-            setAccommodation={setAccommodation}
-          >
-            <span>Online</span>
-            <span>R$ 100</span>
-          </OptionsButton>
-        </div>
+        <ModalityContainer>
+          <div>
+            <OptionsButton
+              id={"presential"}
+              modality={modality}
+              setModality={setModality}
+              accommodation={accommodation}
+              setAccommodation={setAccommodation}
+            >
+              <span>Presencial</span>
+              <span>R$ 250</span>
+            </OptionsButton>
+            <OptionsButton
+              id={"online"}
+              modality={modality}
+              setModality={setModality}
+              accommodation={accommodation}
+              setAccommodation={setAccommodation}
+            >
+              <span>Online</span>
+              <span>R$ 100</span>
+            </OptionsButton>
+          </div>
+        </ModalityContainer>
         <AccommodationContainer show={(!!modality).toString()}>
           <WithAccommodation show={(modality === "presential").toString()}>
             <StyledSubtitle variant="h6">
@@ -121,51 +102,37 @@ export default function PaymentOptions() {
             </BookingButton>
           </WithoutAccommodation>
         </AccommodationContainer>
-      </WithSubscriptionContainer>
+      </Container>
     </PaymentLayout>
   );
 }
 
-const StyledHeader = styled(Typography)`
-  margin-bottom: 36px !important;
-`;
-const StyledSubtitle = styled(Typography)`
-  color: #8e8e8e;
-  width: 100%;
-  text-align: left;
-
-  span {
-    font-weight: bold;
-  }
-
-  @media (max-width: 600px) {
-    width: 300px;
-  }
-`;
-const WithoutSubscriptionContainer = styled.div`
-  display: ${props => (props.show === "true" ? "none" : "flex")};
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 500px;
-
-  .center {
-    text-align: center;
-  }
-
-  @media (max-width: 600px) {
-    height: 280px;
-  }
-`;
-const WithSubscriptionContainer = styled.div`
-  display: ${props => (props.show === "true" ? "flex" : "none")};
+const Container = styled.div`
+  display: flex;
   flex-direction: column;
+`;
 
+const ModalityContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   > div:first-of-type {
     display: flex;
     margin-top: 18px;
   }
 `;
+
+const StyledSubtitle = styled(Typography)`
+  color: #8e8e8e;
+  width: 100%;
+  text-align: left;
+  span {
+    font-weight: bold;
+  }
+  @media (max-width: 600px) {
+    width: 300px;
+  }
+`;
+
 const AccommodationContainer = styled.div`
   display: ${props => (props.show === "true" ? "flex" : "none")};
   flex-direction: column;

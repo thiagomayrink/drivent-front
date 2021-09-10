@@ -1,14 +1,15 @@
 import styled from "styled-components";
 import Typography from "@material-ui/core/Typography";
-import PaymentLayout from "../../layouts/Payment";
+import HotelsLayout from "../../layouts/Hotels";
 
-export default function PaymentBooking() {
+export default function NoPaymentDone() {
   return (
-    <PaymentLayout>
+    <HotelsLayout>
       <StyledSubtitle variant="h6" className="center">
-        Você já reservou o seu ingresso.
+        Você precisa ter confirmado pagamento antes de fazer a escolha de
+        hospedagem
       </StyledSubtitle>
-    </PaymentLayout>
+    </HotelsLayout>
   );
 }
 

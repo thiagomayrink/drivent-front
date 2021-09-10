@@ -2,11 +2,12 @@ import styled from "styled-components";
 import Typography from "@material-ui/core/Typography";
 import PaymentLayout from "../../layouts/Payment";
 
-export default function PaymentBooking() {
+export default function NoSubscriptionDone() {
   return (
     <PaymentLayout>
       <StyledSubtitle variant="h6" className="center">
-        Você já reservou o seu ingresso.
+        Você precisa completar sua inscrição antes de prosseguir pra escolha de
+        ingresso.
       </StyledSubtitle>
     </PaymentLayout>
   );

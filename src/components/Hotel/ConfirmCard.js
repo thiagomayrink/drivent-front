@@ -1,51 +1,52 @@
+/* eslint-disable indent */
 import CardLayout from "../../layouts/Card";
 
 export default function ConfirmCard({ data }) {
-  const { id, image, name, size } = data.hotel;
+  const { image, name } = data.hotel;
 
   function getRoomAvailableText() {
     let text;
-    switch(data.size) {
-    case 1:
-      text = "Você";
-      break;
-    case 2:
-      text = data.available===1 ? "Você" : "Você e mais 1";
-      break;
-    case 3:
-      if(data.available === 0) text = "Você e mais 2";
-      if(data.available === 1) text = "Você e mais 1";
-      if(data.available === 2) text = "Você";
-      break;
-    default: 
-      text = "";
-      break;
+    switch (data.size) {
+      case 1:
+        text = "Você";
+        break;
+      case 2:
+        text = data.available === 1 ? "Você" : "Você e mais 1";
+        break;
+      case 3:
+        if (data.available === 0) text = "Você e mais 2";
+        if (data.available === 1) text = "Você e mais 1";
+        if (data.available === 2) text = "Você";
+        break;
+      default:
+        text = "";
+        break;
     }
     return text;
   }
 
   function getHotelRoomTypeText() {
     let text;
-    switch(data.size) {
-    case 1:
-      text = `${data.name} (Single)`;
-      break;
-    case 2:
-      text = `${data.name} (Double)`;
-      break;
-    case 3:
-      text = `${data.name} (Triple)`;
-      break;
-    default: 
-      text = "";
-      break;
+    switch (data.size) {
+      case 1:
+        text = `${data.name} (Single)`;
+        break;
+      case 2:
+        text = `${data.name} (Double)`;
+        break;
+      case 3:
+        text = `${data.name} (Triple)`;
+        break;
+      default:
+        text = "";
+        break;
     }
     return text;
   }
-  
-  return(
+
+  return (
     <CardLayout selected>
-      <img alt="hotel" src={image}/>
+      <img alt="hotel" src={image} />
       <h3>{name}</h3>
       <div>
         <strong>Quarto reservado:</strong>

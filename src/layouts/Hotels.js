@@ -1,15 +1,15 @@
 import styled from "styled-components";
 
 export default function HotelsLayout({ children }) {
-  return (
-    <Page>
-      {children}
-    </Page>
-  );
+  return <Page>{children}</Page>;
 }
 
 const Page = styled.div`
-    display: flex;
+  height: 100%;
+  width: 100%;
+`;
+
+/* display: flex;
     flex-direction: column;
     
     padding: 0;
@@ -28,5 +28,4 @@ const Page = styled.div`
         font-size: 34px;
         line-height: 40px;
         color: #000000;
-    }
-`;
+    } */
