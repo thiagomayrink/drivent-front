@@ -26,7 +26,7 @@ export default function Activities() {
       setSubscriptionDone(true);
     }
 
-    payment.getPaymentInformations(userData.user.id).then(response => {
+    payment.getPaymentInformations(userData.user.id).then((response) => {
       if (response.status !== 200) {
         return;
       }
@@ -42,18 +42,24 @@ export default function Activities() {
   }, []);
 
   return (
+    // <ActivityContainer>
+    //   <StyledHeader variant="h4"> Escolha de atividades</StyledHeader>
+    //   <div>
+    //     {subscriptionDone === false ? (
+    //       <NoSubscriptionDone />
+    //     ) : onlineChoose === true ? (
+    //       <OnlineChoose />
+    //     ) : paymentDone === false ? (
+    //       <NoPaymentDone />
+    //     ) : (
+    //       <Activity />
+    //     )}
+    //   </div>
+    // </ActivityContainer>
     <ActivityContainer>
       <StyledHeader variant="h4"> Escolha de atividades</StyledHeader>
       <div>
-        {subscriptionDone === false ? (
-          <NoSubscriptionDone />
-        ) : onlineChoose === true ? (
-          <OnlineChoose />
-        ) : paymentDone === false ? (
-          <NoPaymentDone />
-        ) : (
-          <Activity />
-        )}
+        <Activity />
       </div>
     </ActivityContainer>
   );
@@ -63,14 +69,7 @@ const ActivityContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-
-  div {
-    font-size: 34px;
-    line-height: 40px;
-    height: 100%;
-    display: flex;
-  }
 `;
 const StyledHeader = styled(Typography)`
-  margin-bottom: 36px !important;
+  margin-bottom: 27px !important;
 `;
