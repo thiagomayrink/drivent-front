@@ -25,7 +25,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #d7d7d7;
 
   span {
     height: 100%;

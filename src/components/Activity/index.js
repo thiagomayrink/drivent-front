@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import Room from "./Room";
-import Activities from "./Activities";
+import ActivitiesOptions from "./ActivitiesOptions";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
@@ -16,66 +16,6 @@ export default function Activity() {
   const [roomId, setRoomId] = useState(0);
 
   const api = useApi();
-
-  useEffect(() => {
-    checkUserInfos();
-    updateHotels();
-  }, []);
-
-  useEffect(() => {
-    updateRooms();
-  }, [hotelId]);
-
-  function updateHotels() {
-    api.hotel.getHotels().then((hotels) => setHotels(hotels));
-  }
-
-  function checkUserInfos() {
-    api.hotel.userRoomInfos(userData.user.id).then((infos) => {
-      setReservedInfos(infos);
-    });
-  }
-
-  function updateRooms() {
-    api.hotel.getHotelRooms(hotelId).then((rooms) => setRooms(rooms));
-  }
-
-  function reserveRoom() {
-    if (changingRoom) {
-      api.hotel
-        .changeRoom(roomId)
-        .then(() => {
-          toast("Troca efetuada com sucesso!");
-          setTimeout(() => {
-            setChangingRoom(false);
-            checkUserInfos();
-          }, 200);
-        })
-        .catch(() => {
-          toast("Falha ao trocar de quarto!");
-        });
-    } else {
-      api.hotel
-        .reserveRoom(roomId)
-        .then(() => {
-          toast("Reservado com sucesso!");
-          setTimeout(() => {
-            checkUserInfos();
-          }, 200);
-        })
-        .catch((e) => {
-          if (e.response.status === 409)
-            return toast("Já possuí um quarto reservado!");
-          toast("Falha ao reservar!");
-        });
-    }
-  }
-
-  function changeRoom() {
-    setReservedInfos("");
-    setChangingRoom(true);
-    updateHotels();
-  }
 
   return (
     <>
@@ -95,7 +35,7 @@ export default function Activity() {
       </Days>
       <Rooms>
         <Room />
-        <Activities />
+        <ActivitiesOptions />
       </Rooms>
     </>
   );
@@ -107,7 +47,6 @@ const Rooms = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #d7d7d7;
 `;
 
 const Days = styled.div`

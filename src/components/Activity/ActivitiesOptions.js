@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 
-export default function Activities() {
+import Cards from "./Cards";
+
+export default function ActivitiesOptions() {
   return (
     <>
       <Container>
-        <div></div>
-        <div></div>
-        <div></div>
+        <Cards />
       </Container>
     </>
   );
@@ -20,13 +20,21 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
 
-  div {
+  /* > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 100%;
     width: 288px;
-    border-right: 1px solid #d7d7d7;
+    border: 1px solid #d7d7d7;
 
     :first-child {
-      border-left: 1px solid #d7d7d7;
+      border-right: none;
     }
-  }
+
+    :last-child {
+      border-left: none;
+    }
+  } */
 `;
