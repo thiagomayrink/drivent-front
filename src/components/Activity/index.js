@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
-import Card from "../Hotel/Card";
+import Room from "./Room";
+import Activities from "./Activities";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
@@ -92,14 +93,21 @@ export default function Activity() {
           </ActivitiesDay>
         </span>
       </Days>
+      <Rooms>
+        <Room />
+        <Activities />
+      </Rooms>
     </>
   );
 }
 
-const Cards = styled.div`
+const Rooms = styled.div`
+  height: 422px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid #d7d7d7;
 `;
 
 const Days = styled.div`
@@ -107,7 +115,7 @@ const Days = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  margin-bottom: 60px;
+  margin-bottom: 43px;
 
   h2 {
     font-size: 20px;
