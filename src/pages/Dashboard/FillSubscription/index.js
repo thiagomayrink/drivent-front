@@ -1,7 +1,10 @@
 import PersonalInformationForm from "../../../components/PersonalInformationForm";
+import { FileProvider } from "../../../contexts/FilesContext";
 
 export default function FillSubscription() {
   return (
-    <PersonalInformationForm />
+    <FileProvider>
+      <PersonalInformationForm />
+    </FileProvider>
   );
 }

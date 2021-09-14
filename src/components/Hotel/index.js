@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import Card from "./Card";
 import ConfirmCard from "./ConfirmCard";
-import HotelsLayout from "../../layouts/Hotels";
 import styled from "styled-components";
 import AuxLegend from "./AuxLegend";
 import Room from "./Room";
