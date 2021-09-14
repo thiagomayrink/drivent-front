@@ -4,46 +4,66 @@ import ActivitiesOptions from "./ActivitiesOptions";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
 
+import ActDB from "./ActDB";
+import LocDB from "./LocDB";
+import DayDB from "./DayDB";
+
 export default function Activity() {
-  const [chosenDay, setChosenDay] = useState(false);
-  const [activities, setActivities] = useState([]);
-  const [locations, setLocations] = useState([]);
+  const activity = ActDB();
+  const location = LocDB();
+  const day = DayDB();
+  // const [activities, setActivities] = useState([]);
+  // const [locations, setLocations] = useState([]);
+  const [activities, setActivities] = useState(activity);
+  const [activitiesDays, setActivitiesDays] = useState(day);
+  const [locations, setLocations] = useState(location);
+  const [dayId, setDayId] = useState(0);
 
   const api = useApi();
 
-  useEffect(() => {
-    getActivities();
-    getLocations();
-  }, []);
+  // useEffect(() => {
+  //   getActivities();
+  //   getLocations();
+  // }, []);
 
-  function getActivities() {
-    api.activity
-      .getActivities()
-      .then((activities) => setActivities(activities));
-  }
+  // function getActivitiesDays() {
+  //   api.activity
+  //     .getActivitiesDays()
+  //     .then((days) => setActivitiesDays(days));
+  // }
 
-  function getLocations() {
-    api.activity.getLocations().then((locations) => setLocations(activities));
-  }
+  // function getActivities() {
+  //   api.activity
+  //     .getActivities()
+  //     .then((activities) => setActivities(activities));
+  // }
+
+  // function getLocations() {
+  //   api.activity.getLocations().then((locations) => setLocations(activities));
+  // }
 
   return (
     <>
       <Days>
-        {!chosenDay && <h2>Primeiro, escolha o dia</h2>}
+        {dayId === 0 && <h2>Primeiro, escolha o dia</h2>}
         <span>
-          {activities.map((activity) => {
+          {activitiesDays.map((day) => {
             return (
               <ActivitiesDay>
-                <p onClick={() => setChosenDay(true)}>{activity.eventDay}</p>
+                <p onClick={() => setDayId(day.id)}>{day.eventDay}</p>
               </ActivitiesDay>
             );
           })}
         </span>
       </Days>
-      {chosenDay && (
+      {dayId !== 0 && (
         <Locations>
           <Location locations={locations} />
-          <ActivitiesOptions activities={activities} locations={locations} />
+          <ActivitiesOptions
+            activities={activities}
+            locations={locations}
+            dayId={dayId}
+          />
         </Locations>
       )}
     </>

@@ -1,29 +1,44 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { VscError } from "react-icons/vsc";
+import { IoEnterOutline } from "react-icons/io5";
 
-export default function Cards({ activities, locations }) {
+export default function Cards({ activities, locations, dayId }) {
+  const [selected, setSelected] = useState(false);
   return (
     <>
       {locations.map((location) => {
         return (
           <Container key={location.id}>
-            {activities.map((activity) => {
-              return (
+            {activities
+              .filter(
+                (activity) =>
+                  location.id === activity.locationId &&
+                  activity.eventDayId === dayId
+              )
+              .map((card) => (
                 <Card>
                   <div>
-                    <h2>{activity.name}</h2>
+                    <h2>{card.name}</h2>
                     <h3>
-                      {activity.starDate} - {activity.endDate}
+                      {card.startDate} - {card.endDate}
                     </h3>
                   </div>
                   <div>
-                    <SoldOut />
-                    <p>Esgotado</p>
+                    {card.vacancy === 0 ? (
+                      <>
+                        <SoldOut />
+                        <p availability={selected}>Esgotado</p>
+                      </>
+                    ) : (
+                      <>
+                        <Available />
+                        <p availability={selected}>{card.vacancy} vagas</p>
+                      </>
+                    )}
                   </div>
                 </Card>
-              );
-            })}
+              ))}
           </Container>
         );
       })}
@@ -51,13 +66,14 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
-  height: 80px;
+  height: 100px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px 0px 10px 10px;
   border-radius: 5px;
+  margin-bottom: 10px;
   background: #f1f1f1;
 
   h2,
@@ -81,7 +97,7 @@ const Card = styled.div`
   p {
     font-size: 9px;
     line-height: 11px;
-    color: #078632;
+    color: ${(props) => (props.availability ? "#cc6666" : "#078632")};
   }
 
   div {
@@ -111,4 +127,12 @@ const SoldOut = styled(VscError)`
   font-size: 16px;
   margin-bottom: 3px;
   color: #cc6666;
+  cursor: pointer;
+`;
+
+const Available = styled(IoEnterOutline)`
+  font-size: 16px;
+  margin-bottom: 3px;
+  color: #078632;
+  cursor: pointer;
 `;

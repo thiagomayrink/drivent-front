@@ -3,15 +3,11 @@ import styled from "styled-components";
 
 import Cards from "./Cards";
 
-export default function ActivitiesOptions({ activities, locations }) {
-  const { id, name, startDate, endDate, vacancy, locationId } = activities;
+export default function ActivitiesOptions({ activities, locations, dayId }) {
   return (
     <>
       <Container>
-        <Cards
-          activities={activities}  
-          locations={locations}
-        />
+        <Cards dayId={dayId} activities={activities} locations={locations} />
       </Container>
     </>
   );
