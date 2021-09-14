@@ -3,11 +3,15 @@ import styled from "styled-components";
 
 import Cards from "./Cards";
 
-export default function ActivitiesOptions() {
+export default function ActivitiesOptions({ activities, locations }) {
+  const { id, name, startDate, endDate, vacancy, locationId } = activities;
   return (
     <>
       <Container>
-        <Cards />
+        <Cards
+          activities={activities}  
+          locations={locations}
+        />
       </Container>
     </>
   );
@@ -19,22 +23,4 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 288px;
-    border: 1px solid #d7d7d7;
-
-    :first-child {
-      border-right: none;
-    }
-
-    :last-child {
-      border-left: none;
-    }
-  } */
 `;

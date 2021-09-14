@@ -2,45 +2,31 @@ import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { VscError } from "react-icons/vsc";
 
-export default function Cards() {
+export default function Cards({ activities, locations }) {
   return (
     <>
-      <Container>
-        <Card>
-          <div>
-            <h2>Minecraft: montando o PC ideal</h2>
-            <h3>09:00 - 10:00</h3>
-          </div>
-          <div>
-            <SoldOut />
-            <p>Esgotado</p>
-          </div>
-        </Card>
-      </Container>
-      <Container>
-        <Card>
-          <div>
-            <h2>Minecraft: montando o PC ideal</h2>
-            <h3>09:00 - 10:00</h3>
-          </div>
-          <div>
-            <SoldOut />
-            <p>Esgotado</p>
-          </div>
-        </Card>
-      </Container>
-      <Container>
-        <Card>
-          <div>
-            <h2>Minecraft: montando o PC ideal</h2>
-            <h3>09:00 - 10:00</h3>
-          </div>
-          <div>
-            <SoldOut />
-            <p>Esgotado</p>
-          </div>
-        </Card>
-      </Container>
+      {locations.map((location) => {
+        return (
+          <Container key={location.id}>
+            {activities.map((activity) => {
+              return (
+                <Card>
+                  <div>
+                    <h2>{activity.name}</h2>
+                    <h3>
+                      {activity.starDate} - {activity.endDate}
+                    </h3>
+                  </div>
+                  <div>
+                    <SoldOut />
+                    <p>Esgotado</p>
+                  </div>
+                </Card>
+              );
+            })}
+          </Container>
+        );
+      })}
     </>
   );
 }

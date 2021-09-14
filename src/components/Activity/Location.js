@@ -1,21 +1,16 @@
-import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 
-export default function Room() {
+export default function Location({ locations }) {
   return (
-    <>
-      <Container>
-        <span>
-          <h1>Auditório principal</h1>
-        </span>
-        <span>
-          <h1>Auditório principal</h1>
-        </span>
-        <span>
-          <h1>Auditório principal</h1>
-        </span>
-      </Container>
-    </>
+    <Container>
+      {locations.map((location) => {
+        return (
+          <span key={location.id}>
+            <h1>{location.name}</h1>
+          </span>
+        );
+      })}
+    </Container>
   );
 }
 
@@ -39,5 +34,4 @@ const Container = styled.div`
     font-weight: 400;
     color: #7b7b7b;
   }
-
 `;

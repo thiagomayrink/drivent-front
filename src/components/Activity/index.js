@@ -1,47 +1,56 @@
 import { useEffect, useState, useContext } from "react";
-import Room from "./Room";
+import Location from "./Location";
 import ActivitiesOptions from "./ActivitiesOptions";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
-import { toast } from "react-toastify";
-import UserContext from "../../contexts/UserContext";
 
 export default function Activity() {
-  const { userData } = useContext(UserContext);
-  const [reservedInfos, setReservedInfos] = useState("");
-  const [changingRoom, setChangingRoom] = useState(false);
-  const [hotels, setHotels] = useState([]);
-  const [rooms, setRooms] = useState([]);
-  const [hotelId, setHotelId] = useState(0);
-  const [roomId, setRoomId] = useState(0);
+  const [chosenDay, setChosenDay] = useState(false);
+  const [activities, setActivities] = useState([]);
+  const [locations, setLocations] = useState([]);
 
   const api = useApi();
+
+  useEffect(() => {
+    getActivities();
+    getLocations();
+  }, []);
+
+  function getActivities() {
+    api.activity
+      .getActivities()
+      .then((activities) => setActivities(activities));
+  }
+
+  function getLocations() {
+    api.activity.getLocations().then((locations) => setLocations(activities));
+  }
 
   return (
     <>
       <Days>
-        <h2>Primeiro, escolha o dia</h2>
+        {!chosenDay && <h2>Primeiro, escolha o dia</h2>}
         <span>
-          <ActivitiesDay>
-            <p>Sexta, 22/10</p>
-          </ActivitiesDay>
-          <ActivitiesDay>
-            <p>Sexta, 23/10</p>
-          </ActivitiesDay>
-          <ActivitiesDay>
-            <p>Sexta, 24/10</p>
-          </ActivitiesDay>
+          {activities.map((activity) => {
+            return (
+              <ActivitiesDay>
+                <p onClick={() => setChosenDay(true)}>{activity.eventDay}</p>
+              </ActivitiesDay>
+            );
+          })}
         </span>
       </Days>
-      <Rooms>
-        <Room />
-        <ActivitiesOptions />
-      </Rooms>
+      {chosenDay && (
+        <Locations>
+          <Location locations={locations} />
+          <ActivitiesOptions activities={activities} locations={locations} />
+        </Locations>
+      )}
     </>
   );
 }
 
-const Rooms = styled.div`
+const Locations = styled.div`
   height: 422px;
   display: flex;
   flex-direction: column;
