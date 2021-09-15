@@ -50,6 +50,7 @@ export default function Activity() {
         <span>
           {activitiesDays.map((day) => (
             <Day
+              key={day.id}
               eventDay={day.eventDay}
               setDayId={setDayId}
               id={day.id}

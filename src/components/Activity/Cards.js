@@ -5,6 +5,7 @@ import Card from "./Card";
 
 export default function Cards({ activities, locations, dayId }) {
   const [activityId, setActivityId] = useState(false);
+  const [selectedActivities, setSelectedActivities] = useState([]);
 
   return (
     <>
@@ -18,6 +19,8 @@ export default function Cards({ activities, locations, dayId }) {
             )
             .map((card) => (
               <Card
+                key={card.id}
+                activity={card}
                 id={card.id}
                 name={card.name}
                 startDate={card.startDate}
@@ -29,6 +32,8 @@ export default function Cards({ activities, locations, dayId }) {
                 dayId={dayId}
                 locationId={location.id}
                 activityLocationId={card.locationId}
+                selectedActivities={selectedActivities}
+                setSelectedActivities={setSelectedActivities}
               />
             ))}
         </Container>

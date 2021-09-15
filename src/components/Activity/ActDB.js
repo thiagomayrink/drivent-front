@@ -5,7 +5,7 @@ export default function ActDB() {
       name: "Minecraft: montando o PC ideal ifdhuidfhguidfg",
       eventDayId: 1,
       eventDay: "Sexta, 22/10",
-      startDate: "10:00",
+      startDate: "09:00",
       endDate: "11:00",
       vacancy: 27,
       locationId: 1,

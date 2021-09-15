@@ -3,7 +3,11 @@ import styled from "styled-components";
 
 export default function Day({ eventDay, dayId, setDayId, id }) {
   return (
-    <ActivitiesDay selected={dayId === id} onClick={() => setDayId(id)}>
+    <ActivitiesDay
+      key={id}
+      selected={dayId === id}
+      onClick={() => setDayId(id)}
+    >
       <p>{eventDay}</p>
     </ActivitiesDay>
   );

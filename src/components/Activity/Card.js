@@ -3,23 +3,67 @@ import styled from "styled-components";
 import { VscError } from "react-icons/vsc";
 import { IoEnterOutline } from "react-icons/io5";
 import { BiCheckCircle } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 export default function Card({
-  id,
-  name,
-  startDate,
-  endDate,
-  vacancy,
-  activityId,
-  setActivityId,
+  //   id,
+  //   name,
+  //   startDate,
+  //   endDate,
+  //   vacancy,
+  //   activityId,
+  //   setActivityId,
+  activity,
   eventDay,
   dayId,
   locationId,
-  activityLocationId
+  activityLocationId,
+  selectedActivities,
+  setSelectedActivities,
 }) {
+  const { id, name, startDate, endDate, vacancy } = activity;
   const [selected, setSelected] = useState(false);
+
+  const close = { autoClose: 2500 };
+
+  console.log(selectedActivities);
+
+  function selectActivity() {
+    const start = parseFloat(startDate.split(":", [1]));
+    const end = parseFloat(endDate.split(":", [1]));
+    const selectedActivity = {
+      id,
+      name,
+      start,
+      end,
+    };
+    if (vacancy === 0) return toast("Esta atividade já esgotou!", close);
+    else if (selected) {
+      const updatedActivities = selectedActivities.filter(
+        (act) => act.id !== id
+      );
+      setSelectedActivities(updatedActivities);
+      setSelected(false);
+    } else if (selectedActivities.length === 0) {
+      setSelectedActivities([...selectedActivities, selectedActivity]);
+      setSelected(true);
+    } else {
+      const same = selectedActivities.find(
+        (act) =>
+          start >= act.start &&
+          start < act.end &&
+          end > act.start &&
+          end <= act.end
+      );
+      if (same)
+        return toast("Há um conflito de horário entre as atividades!", close);
+      else setSelectedActivities([...selectedActivities, selectedActivity]);
+      setSelected(true);
+    }
+  }
+
   return (
-    <ActivityCard selected={selected} onClick={() => setSelected(true)}>
+    <ActivityCard key={id} selected={selected} onClick={selectActivity}>
       <div>
         <h2>{name}</h2>
         <h3>
@@ -31,18 +75,18 @@ export default function Card({
           vacancy === 0 ? (
             <>
               <SoldOut />
-              <p class="red">Esgotado</p>
+              <p className="red">Esgotado</p>
             </>
           ) : (
             <>
               <Available />
-              <p class="green">{vacancy} vagas</p>
+              <p className="green">{vacancy} vagas</p>
             </>
           )
         ) : (
           <>
             <Check />
-            <p class="green">Inscrito</p>
+            <p className="green">Inscrito</p>
           </>
         )}
       </div>
