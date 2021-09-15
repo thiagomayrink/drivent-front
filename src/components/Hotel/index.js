@@ -26,6 +26,13 @@ export default function Hotel() {
   }, []);
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      updateHotels();
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
     updateRooms();
   }, [hotelId]);
 
@@ -117,7 +124,10 @@ export default function Hotel() {
                 ))}
               </Rooms>
               {roomId !== 0 ? (
-                <Button onClick={() => reserveRoom()}> {changingRoom ? "TROCAR DE QUARTO" : "RESERVAR QUARTO"} </Button>
+                <Button onClick={() => reserveRoom()}>
+                  {" "}
+                  {changingRoom ? "TROCAR DE QUARTO" : "RESERVAR QUARTO"}{" "}
+                </Button>
               ) : (
                 ""
               )}
@@ -170,26 +180,26 @@ const Button = styled.button`
 `;
 
 const HotelLayout = styled.div`
-    height: 100%;
-    width: 100%;
-    display: flex;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  padding: 0;
+
+  & > * {
+    text-align: initial;
+  }
+
+  @media (max-width: 600px) {
     flex-direction: column;
-    
-    padding: 0;
+  }
 
-    & > * {
-        text-align: initial;
-    }
-
-    @media (max-width: 600px) {
-        flex-direction: column;
-    }
-
-    h2{
-        font-style: normal;
-        font-weight: normal;
-        font-size: 34px;
-        line-height: 40px;
-        color: #000000;
-    }
+  h2 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 34px;
+    line-height: 40px;
+    color: #000000;
+  }
 `;
