@@ -4,6 +4,7 @@ import ActivitiesOptions from "./ActivitiesOptions";
 import styled from "styled-components";
 import useApi from "../../hooks/useApi";
 
+import Day from "./Day";
 import ActDB from "./ActDB";
 import LocDB from "./LocDB";
 import DayDB from "./DayDB";
@@ -47,13 +48,14 @@ export default function Activity() {
       <Days>
         {dayId === 0 && <h2>Primeiro, escolha o dia</h2>}
         <span>
-          {activitiesDays.map((day) => {
-            return (
-              <ActivitiesDay>
-                <p onClick={() => setDayId(day.id)}>{day.eventDay}</p>
-              </ActivitiesDay>
-            );
-          })}
+          {activitiesDays.map((day) => (
+            <Day
+              eventDay={day.eventDay}
+              setDayId={setDayId}
+              id={day.id}
+              dayId={dayId}
+            />
+          ))}
         </span>
       </Days>
       {dayId !== 0 && (
@@ -98,22 +100,4 @@ const Days = styled.div`
     align-items: center;
     justify-content: flex-start;
   }
-`;
-
-const ActivitiesDay = styled.div`
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
-  width: 131px;
-  height: 37px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e0e0e0;
-  border: none;
-  border-radius: 4px;
-  margin-right: 24px;
-  font-size: 16px;
-  line-height: 19px;
-  text-align: center;
-  color: #454545;
-  cursor: pointer;
 `;
