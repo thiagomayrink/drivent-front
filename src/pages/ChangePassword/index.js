@@ -29,9 +29,15 @@ export default function ChangePassword() {
   function submit(event) {
     event.preventDefault();
     setLoadingButton(true);
+
     if (password !== confirmationPassword) {
       toast("As senhas devem coincidir!");
-      setLoadingButton(true);
+      setLoadingButton(false);
+      return;
+    }
+    if (password.length < 6) {
+      toast("As senhas devem conter no mínimo 6 caracteres!");
+      setLoadingButton(false);
       return;
     }
 
@@ -40,7 +46,7 @@ export default function ChangePassword() {
       .then((response) => {
         if (response.status === 200) {
           setDidPasswordReset(true);
-          history.go("/sign-in", 2000);
+          setTimeout(() => history.push("/sign-in"), 2500);
         }
       })
       .catch((error) => {

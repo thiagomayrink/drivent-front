@@ -61,10 +61,9 @@ export default function NavigationBar() {
 
       <Link
         to={`${match.path}/sign-out`}
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
           localStorage.clear();
-          history.go(0, 500);
+          setTimeout(() => history.go(0), 1500);
         }}
       >
         <NavigationButton active={isActive(`${match.path}/sign-out`)}>
