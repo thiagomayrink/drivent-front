@@ -1,4 +1,4 @@
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 import styled from "styled-components";
 
@@ -8,12 +8,14 @@ import {
   FaBed,
   FaCalendarWeek,
   FaCertificate,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 import NavigationButton from "./NavigationButton";
 
 export default function NavigationBar() {
   const location = useLocation();
+  const history = useHistory();
   const match = useRouteMatch();
 
   function isActive(buttonPath) {
@@ -56,6 +58,19 @@ export default function NavigationBar() {
           <span>Certificado</span>
         </NavigationButton>
       </Link>
+
+      <Link
+        to={`${match.path}/sign-out`}
+        onClick={() => {
+          localStorage.clear();
+          setTimeout(() => history.go(0), 1500);
+        }}
+      >
+        <NavigationButton active={isActive(`${match.path}/sign-out`)}>
+          <FaSignOutAlt />
+          <span>SignOut</span>
+        </NavigationButton>
+      </Link>
     </Container>
   );
 }
@@ -64,7 +79,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #ddd;
-  box-shadow: 2px 0 10px 0 rgba(0,0,0,0.1);
+  box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.1);
   width: 100px;
   flex-shrink: 0;
   justify-content: flex-start;
