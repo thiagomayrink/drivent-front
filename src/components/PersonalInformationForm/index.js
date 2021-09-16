@@ -21,6 +21,9 @@ import { ErrorMsg } from "./ErrorMsg";
 import { ufList } from "./ufList";
 import FormValidations from "./FormValidations";
 import UserContext from "../../contexts/UserContext";
+import Upload from "../Upload";
+import { useFiles } from "../../contexts/FilesContext";
+import Picture from "./Picture";
 
 dayjs.extend(CustomParseFormat);
 
@@ -28,6 +31,7 @@ export default function PersonalInformationForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const { enrollment, cep } = useApi();
   const { userData, setUserData } = useContext(UserContext);
+  const { setPictureUrl } = useFiles();
 
   const {
     handleSubmit,
@@ -57,7 +61,7 @@ export default function PersonalInformationForm() {
           .replace(/[^0-9]+/g, "")
           .replace(/^(\d{2})(9?\d{4})(\d{4})$/, "($1) $2-$3"),
       };
-
+      
       enrollment
         .save(newData)
         .then(() => {
@@ -102,7 +106,12 @@ export default function PersonalInformationForm() {
         birthday,
         phone,
         address,
-      } = response.data;
+      } = response.data.enrollment;
+
+      const { photo } = response.data;
+      const photoUrl = photo[0].url;
+
+      setPictureUrl(photoUrl);
 
       if (enrollmentId) {
         setUserData({ ...userData, subscriptionDone: true });
@@ -155,7 +164,10 @@ export default function PersonalInformationForm() {
 
   return (
     <>
-      <StyledTypography variant="h4">Suas Informações</StyledTypography>
+      <HeaderContainer>
+        <StyledTypography variant="h4">Suas Informações</StyledTypography>
+        <Picture />
+      </HeaderContainer>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <FormWrapper onSubmit={handleSubmit}>
           <InputWrapper>
@@ -294,7 +306,7 @@ export default function PersonalInformationForm() {
               onChange={handleChange("addressDetail")}
             />
           </InputWrapper>
-
+          <Upload />
           <SubmitContainer>
             <Button type="submit" disabled={dynamicInputIsLoading}>
               Salvar
@@ -302,7 +314,7 @@ export default function PersonalInformationForm() {
           </SubmitContainer>
         </FormWrapper>
       </MuiPickersUtilsProvider>
-    </>
+    </>    
   );
 }
 
@@ -317,4 +329,12 @@ const SubmitContainer = styled.div`
   > button {
     margin-top: 0 !important;
   }
+`;
+
+const HeaderContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 60px;
+    margin: 10px 0;
 `;
