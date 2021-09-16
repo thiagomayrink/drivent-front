@@ -14,6 +14,7 @@ import EventInfoContext, {
   EventInfoProvider,
 } from "./contexts/EventInfoContext";
 import UserContext, { UserProvider } from "./contexts/UserContext";
+import ForgotPassword from "./pages/ForgotPassword";
 
 export default function App() {
   return (
@@ -41,6 +42,14 @@ export default function App() {
                 exact
               >
                 <SignIn />
+              </ConditionalRoute>
+
+              <ConditionalRoute
+                check={ensureCountdownOver}
+                path="/forgot-password"
+                exact
+              >
+                <ForgotPassword />
               </ConditionalRoute>
 
               <ConditionalRoute check={ensureAuthenticated} path="/dashboard">
