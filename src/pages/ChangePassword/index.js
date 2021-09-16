@@ -50,9 +50,6 @@ export default function ChangePassword() {
         }
       })
       .catch((error) => {
-        /* eslint-disable-next-line no-console */
-        console.error(error);
-
         if (error.response) {
           const message = error.response.data.message;
           toast(message);
