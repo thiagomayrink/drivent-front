@@ -10,6 +10,10 @@ export default class UserApi extends AuthenticatedApi {
     return api.post("/users/password-recovery", { email });
   }
 
+  changePassword(token, password) {
+    return api.patch(`/users/change-password?token=${token}`, { password });
+  }
+
   updatePhoto(photo) {
     return api.post("/users/photo", photo, {
       headers: {

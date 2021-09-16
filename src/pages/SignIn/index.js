@@ -12,7 +12,7 @@ import EventInfoContext from "../../contexts/EventInfoContext";
 import UserContext from "../../contexts/UserContext";
 
 import useApi from "../../hooks/useApi";
-import styled from "styled-components";
+import GradientLink from "../../components/GradientLink";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -83,10 +83,10 @@ export default function SignIn() {
         </form>
       </Row>
       <Row>
-        <StyledLink to="/forgot-password">
+        <GradientLink to="/forgot-password">
           Esqueceu a senha? <br />
           Clique aqui para recuperar
-        </StyledLink>
+        </GradientLink>
       </Row>
       <Row>
         <Link to="/enroll">Não possui login? Inscreva-se</Link>
@@ -94,20 +94,3 @@ export default function SignIn() {
     </AuthLayout>
   );
 }
-
-const StyledLink = styled(Link)`
-  :hover {
-    color: #000;
-    -webkit-background-clip: none;
-    -webkit-text-fill-color: black;
-    -moz-background-clip: none;
-    -moz-text-fill-color: black;
-  }
-
-  background-image: linear-gradient(45deg, #ff3191, #ffb27f);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-background-clip: text;
-  -moz-text-fill-color: transparent;
-`;
